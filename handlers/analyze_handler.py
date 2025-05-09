@@ -9,6 +9,7 @@ from telegram.ext import ( #για τις επιλογες που υπαρχου
 from binance_utils import get_klines #για την ληψη των candlesticks #### Η get_klines() είναι μια Python συνάρτηση που δημιουργήσαμε για να τραβάει ιστορικά candlesticks (κεριά) από το Binance API.
 from analyze_indicators import apply_indicators #import απο το αρχειο analyze indicator για να παραγονται αυτοματα οι δεικτες στο signal 
 from signal_decision import decide_signal #import απο το αρχειο signal_decision = υπολογιζει αυτοματα στην αναλυση long/short
+from trade_levels import calculate_trade_levels #import απο το αρχειο trade levels = υπολογισμος stop loss tp1 tp2 tp3! 
 
 async def analyze(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Εδώ θα υλοποιηθεί η λογική για την εντολή /analyze
@@ -57,8 +58,15 @@ try:
     df = get_klines(symbol, interval=timeframe) #φέρνει τα candlesticks από Binance
     df = apply_indicators(df) #εφαρμόζει όλους τους δείκτες πάνω στο dataframe (RSI, MACD, VWAP, ATR, κ.λπ.)
     signal, confirmations = decide_signal(df) #Εξετάζει το τελευταίο candlestick και στην συνεχεια δινει τα confirmation στους δεικτες
-    
-    conf_lines = [f"📢 Signal: {signal}\n\n📊 Confirmations:"] #εδω βρισκεται η εντολη στους δεικτες για confirmation✅/❌.
+    entry, sl, tp1, tp2, tp3 = calculate_trade_levels(df, signal) #εφαρμοζει το entry stop loss tp1 tp2 απο αρχειο trade level με βάσει του σήματος LONG ή SHORT και του ATR.
+
+    conf_lines = [f"📢 Signal: {signal}", #σχετιζονατι με το αρχειο trade level 
+                  f"🎯 Entry: {entry}",
+                  f"🛑 SL: {sl}",
+                  f"🎯 TP1: {tp1}",
+                  f"🎯 TP2: {tp2}",
+                  f"🎯 TP3: {tp3}",
+                  f"\\n📊 Confirmations:"]
     for key, value in confirmations.items():
         if value == "LONG":
             icon = "✅ LONG"
