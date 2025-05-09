@@ -1,10 +1,12 @@
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from handlers.price_handler import price  #δεδομενα binance
 from config import BOT_TOKEN
 from handlers.start_handler import start
 
 def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
+    app.add_handler(CommandHandler("price", price)) #δεδομενα binance
 
     app.add_handler(CommandHandler("start", start))
 
