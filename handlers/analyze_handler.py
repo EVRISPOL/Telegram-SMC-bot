@@ -46,15 +46,24 @@ async def receive_capital(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def receive_mtf(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["mtf"] = update.message.text.strip()
-    summary = (
-        f"✅ Τα δεδομένα καταχωρήθηκαν:\n\n"
-        f"Symbol: {context.user_data['symbol']}\n"
-        f"Timeframe: {context.user_data['timeframe']}\n"
-        f"Leverage: {context.user_data['leverage']}\n"
-        f"Risk %: {context.user_data['risk']}\n"
-        f"Capital: {context.user_data['capital']}\n"
-        f"MTF: {context.user_data['mtf']}\n"
-    )
+   
+ # Λήψη candlesticks από Binance
+    symbol = context.user_data["symbol"]
+    timeframe = context.user_data["timeframe"]
+    
+    try:
+        df = get_klines(symbol, interval=timeframe, limit=100)
+        response = (
+            f"✅ Λήψη candlesticks επιτυχής για {symbol} ({timeframe})
+"
+            f"📊 Εγγραφές: {len(df)}"
+        )
+    except Exception as e:
+        response = f"❌ Σφάλμα κατά τη λήψη δεδομένων: {str(e)}"
+
+    await update.message.reply_text(response, reply_markup=ReplyKeyboardRemove())
+    return ConversationHandler.END
+
     await update.message.reply_text(summary, reply_markup=ReplyKeyboardRemove())
     return ConversationHandler.END
 
