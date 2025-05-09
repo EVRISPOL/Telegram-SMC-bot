@@ -51,6 +51,9 @@ async def receive_mtf(update: Update, context: ContextTypes.DEFAULT_TYPE):
  # Λήψη candlesticks από Binance
     symbol = context.user_data["symbol"]
     timeframe = context.user_data["timeframe"]
+
+    df = get_klines(symbol, interval=timeframe) #φέρνει τα candlesticks από Binance
+    df = apply_indicators(df) #εφαρμόζει όλους τους δείκτες πάνω στο dataframe (RSI, MACD, VWAP, ATR, κ.λπ.)
     
     try:
         df = get_klines(symbol, interval=timeframe, limit=100)
