@@ -10,6 +10,7 @@ from binance_utils import get_klines #για την ληψη των candlesticks
 from analyze_indicators import apply_indicators #import απο το αρχειο analyze indicator για να παραγονται αυτοματα οι δεικτες στο signal 
 from signal_decision import decide_signal #import απο το αρχειο signal_decision = υπολογιζει αυτοματα στην αναλυση long/short
 from trade_levels import calculate_trade_levels #import απο το αρχειο trade levels = υπολογισμος stop loss tp1 tp2 tp3! 
+from chart_generator import generate_chart #import απο το chart generator για την εμφανιση εικονας chart στην ολοκληρωση της αναλυσης
 
 async def analyze(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Εδώ θα υλοποιηθεί η λογική για την εντολή /analyze
@@ -82,7 +83,8 @@ try:
     except Exception as e:
         response = f"❌ Σφάλμα κατά την ανάλυση: {str(e)}"
 
-    await update.message.reply_text(response, reply_markup=ReplyKeyboardRemove())
+    chart = generate_chart(df, symbol, signal, entry, sl, tp1, tp2, tp3)  #import απο το chart generator για την εμφανιση εικονας chart στην ολοκληρωση της αναλυσης
+    await update.message.reply_photo(photo=chart, caption=response, reply_markup=ReplyKeyboardRemove())
     return ConversationHandler.END
 
     await update.message.reply_text(summary, reply_markup=ReplyKeyboardRemove())
