@@ -1,4 +1,5 @@
 from telegram import Update, ReplyKeyboardRemove 
+from analyze_indicators import apply_indicators #import απο το αρχειο analyze indicator για να παραγονται αυτοματα οι δεικτες στο signal 
 from telegram.ext import ( #για τις επιλογες που υπαρχουν στο tele π.χ(πληκτρολογησε το symbol. κλπ)
     ContextTypes,
     ConversationHandler,
