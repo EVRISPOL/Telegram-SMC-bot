@@ -1,5 +1,4 @@
 from telegram import Update, ReplyKeyboardRemove 
-from analyze_indicators import apply_indicators #import απο το αρχειο analyze indicator για να παραγονται αυτοματα οι δεικτες στο signal 
 from telegram.ext import ( #για τις επιλογες που υπαρχουν στο tele π.χ(πληκτρολογησε το symbol. κλπ)
     ContextTypes,
     ConversationHandler,
@@ -8,6 +7,8 @@ from telegram.ext import ( #για τις επιλογες που υπαρχου
     filters,
 )
 from binance_utils import get_klines #για την ληψη των candlesticks #### Η get_klines() είναι μια Python συνάρτηση που δημιουργήσαμε για να τραβάει ιστορικά candlesticks (κεριά) από το Binance API.
+from analyze_indicators import apply_indicators #import απο το αρχειο analyze indicator για να παραγονται αυτοματα οι δεικτες στο signal 
+from signal_decision import decide_signal #import απο το αρχειο signal_decision = υπολογιζει αυτοματα στην αναλυση long/short
 
 async def analyze(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Εδώ θα υλοποιηθεί η λογική για την εντολή /analyze
@@ -52,18 +53,26 @@ async def receive_mtf(update: Update, context: ContextTypes.DEFAULT_TYPE):
     symbol = context.user_data["symbol"]
     timeframe = context.user_data["timeframe"]
 
+try:
     df = get_klines(symbol, interval=timeframe) #φέρνει τα candlesticks από Binance
     df = apply_indicators(df) #εφαρμόζει όλους τους δείκτες πάνω στο dataframe (RSI, MACD, VWAP, ATR, κ.λπ.)
+    signal, confirmations = decide_signal(df) #Εξετάζει το τελευταίο candlestick και στην συνεχεια δινει τα confirmation στους δεικτες
     
-    try:
-        df = get_klines(symbol, interval=timeframe, limit=100)
-        response = (
-            f"✅ Λήψη candlesticks επιτυχής για {symbol} ({timeframe})
-"
-            f"📊 Εγγραφές: {len(df)}"
-        )
+    conf_lines = [f"📢 Signal: {signal}\n\n📊 Confirmations:"] #εδω βρισκεται η εντολη στους δεικτες για confirmation✅/❌.
+    for key, value in confirmations.items():
+        if value == "LONG":
+            icon = "✅ LONG"
+        elif value == "SHORT":
+            icon = "🔻 SHORT"
+        elif value == "NONE":
+            icon = "✅ NONE"
+        else:
+            icon = f"🔸 {value}"
+        conf_lines.append(f"- {key}: {icon}")
+        
+        response = "\n".join(conf_lines)
     except Exception as e:
-        response = f"❌ Σφάλμα κατά τη λήψη δεδομένων: {str(e)}"
+        response = f"❌ Σφάλμα κατά την ανάλυση: {str(e)}"
 
     await update.message.reply_text(response, reply_markup=ReplyKeyboardRemove())
     return ConversationHandler.END
