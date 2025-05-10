@@ -95,6 +95,11 @@ try:
     for key, value in indicators.items(): #σχετιζεται με το evaluate_indicator
         conf_lines.append(f"- {key}: {val}")
 
+    if mtf_result:
+    conf_lines.append("\\n🧭 MTF Confirmation:") #αυτη η εντολη σχετιζεται με το confirmation που θα υπαρχει στην αναλυση για το mtf 
+    for key, value in mtf_result.items():
+        conf_lines.append(f"- {key}: {value}")
+
     response = "\n".join(conf_lines)
     chart = generate_chart(df, symbol, signal, entry, sl, tp1, tp2, tp3)
     await update.message.reply_photo(photo=chart, caption=response, reply_markup=ReplyKeyboardRemove())
