@@ -45,7 +45,6 @@ def generate_chart(df, symbol, signal, entry, sl, tp1, tp2, tp3):
     plt.close()
 
     return buf
-"""
 
 # Save the corrected version to file
 chart_generator_path = "/mnt/data/Telegram-SMC-bot-main/chart_generator.py"
