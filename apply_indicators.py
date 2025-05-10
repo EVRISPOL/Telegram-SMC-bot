@@ -81,9 +81,9 @@ def calculate_stochastic_rsi(df, period=14, smooth_k=3, smooth_d=3):
     return df
 
 def calculate_adx(df, period=14):
-    high = df['high']
-    low = df['low']
-    close = df['close']
+    high = df['high'].astype(float)
+    low = df['low'].astype(float)
+    close = df['close'].astype(float)
 
     plus_dm = high.diff()
     minus_dm = low.diff()
