@@ -1,4 +1,3 @@
-
 import pandas as pd
 
 def calculate_rsi(df, period=14):
