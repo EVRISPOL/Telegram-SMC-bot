@@ -82,8 +82,24 @@ def calculate_stochastic_rsi(df, period=14):
     stoch_rsi = (rsi - rsi.rolling(period).min()) / (rsi.rolling(period).max() - rsi.rolling(period).min())
     df['StochRSI_K'] = stoch_rsi * 100
     df['StochRSI_D'] = df['StochRSI_K'].rolling(3).mean()
-
     return df
+
+def calculate_adx(df, period=14):
+    df['TR'] = df[['high', 'low', 'close']].max(axis=1) - df[['high', 'low', 'close']].min(axis=1)
+
+    df['+DM'] = df['high'].diff()
+    df['-DM'] = df['low'].diff()
+    df['+DM'] = df['+DM'].where((df['+DM'] > df['-DM']) & (df['+DM'] > 0), 0.0)
+    df['-DM'] = df['-DM'].where((df['-DM'] > df['+DM']) & (df['-DM'] > 0), 0.0)
+
+    atr = df['TR'].rolling(window=period).mean()
+    plus_di = 100 * (df['+DM'].rolling(window=period).mean() / atr)
+    minus_di = 100 * (df['-DM'].rolling(window=period).mean() / atr)
+
+    dx = (abs(plus_di - minus_di) / (plus_di + minus_di)) * 100
+    df['ADX'] = dx.rolling(window=period).mean()
+    return df
+
 
 def apply_indicators(df):
     df = calculate_rsi(df)
@@ -94,4 +110,5 @@ def apply_indicators(df):
     df = calculate_atr(df)
     df = calculate_bollinger_bands(df)
     df = calculate_stochastic_rsi(df)
+    df = calculate_adx(df)
     return df
