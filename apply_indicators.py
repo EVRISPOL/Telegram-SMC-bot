@@ -21,7 +21,7 @@ def calculate_macd(df):
     df['MACD'] = macd
     df['MACD_Signal'] = signal
     df['MACD_Hist'] = hist
-    df['MACD_Cross'] = (macd > signal).map({True: 'bullish', False: 'bearish'})
+    df['MACD_Cross'] = (df['MACD'] > df['MACD_Signal']).map({True: 'bullish', False: 'bearish'})
     return df
 
 
