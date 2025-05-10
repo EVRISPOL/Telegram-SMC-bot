@@ -17,10 +17,14 @@ def calculate_macd(df):
     macd = exp1 - exp2
     signal = macd.ewm(span=9, adjust=False).mean()
     hist = macd - signal
+
     df['MACD'] = macd
     df['MACD_Signal'] = signal
     df['MACD_Hist'] = hist
-    df['MACD_Cross'] = ['bullish' if m > s else 'bearish' for m, s in zip(macd, signal)]
+
+    macd_cross = ['bullish' if m > s else 'bearish' for m, s in zip(macd, signal)]
+    macd_cross = pd.Series(macd_cross, index=df.index[-len(macd_cross):])
+    df['MACD_Cross'] = macd_cross.reindex(df.index, method='ffill')
     return df
 
 def calculate_ema_ribbon(df):
