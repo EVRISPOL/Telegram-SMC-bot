@@ -7,6 +7,7 @@ from telegram.ext import ( #για τις επιλογες που υπαρχου
     filters,
 )
 from binance_utils import get_klines #για την ληψη των candlesticks #### Η get_klines() είναι μια Python συνάρτηση που δημιουργήσαμε για να τραβάει ιστορικά candlesticks (κεριά) από το Binance API.
+from mtf_checker import check_mtf_confirmation #κανουμε import το αρχειο checker mtf για να υπαρχει η επιλογη mtf timeframe στην επιλογη /analyze
 from evaluate_indicators import evaluate_indicators  #import σχεδιασμένο να αξιολογεί αυτόματα LONG ή SHORT σήματα με βάση όλους τους δείκτες ποιο αναλυτικα με αριθμους! περισσοτερες πληροφοριες στο evaluate indicators! ΕΙΝΑΙ STRATEGY
 from apply_indicators import apply_indicators #import απο το αρχειο apple indicator για να παραγονται αυτοματα οι δεικτες στο signal 
 from trade_levels import calculate_trade_levels #import απο το αρχειο trade levels = υπολογισμος stop loss tp1 tp2 tp3! 
@@ -78,6 +79,10 @@ try:
 
     signal = evaluate_indicators(indicators) #σχεδιασμένο να αξιολογεί αυτόματα LONG ή SHORT σήματα με βάση όλους τους δείκτες ποιο αναλυτικα με αριθμους! περισσοτερες πληροφοριες στο evaluate indicators! ΕΙΝΑΙ STRATEGY
     entry, sl, tp1, tp2, tp3 = calculate_trade_levels(df, signal) #εφαρμοζει το entry stop loss tp1 tp2 απο αρχειο trade level με βάσει του σήματος LONG ή SHORT και του ATR.
+    
+    mtf_result = None
+    if user_data.get("mtf") and user_data["mtf"].lower() != "skip":
+        mtf_result = check_mtf_confirmation(symbol, user_data["mtf"], signal)
 
     conf_lines = [f"📢 Signal: {signal}", #σχετιζονατι με το αρχειο trade level 
                   f"🎯 Entry: {entry}",
