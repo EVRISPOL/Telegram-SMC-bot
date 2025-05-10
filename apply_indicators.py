@@ -67,6 +67,19 @@ def calculate_bollinger_bands(df, period=20, std_dev=2):
                            for c, u, l in zip(df['close'], upper, lower)]
     return df
 
+def calculate_stochastic_rsi(df, period=14, smooth_k=3, smooth_d=3):
+    delta = df['close'].diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
+
+    rs = gain / loss
+    rsi = 100 - (100 / (1 + rs))
+
+    stoch_rsi = (rsi - rsi.rolling(window=period).min()) / (rsi.rolling(window=period).max() - rsi.rolling(window=period).min())
+    df['stochrsi_k'] = stoch_rsi.rolling(window=smooth_k).mean()
+    df['stochrsi_d'] = df['stochrsi_k'].rolling(window=smooth_d).mean()
+    return df
+
 def apply_indicators(df):
     df = calculate_rsi(df)
     print("Μετά το RSI:", len(df))
