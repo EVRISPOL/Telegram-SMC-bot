@@ -62,6 +62,12 @@ def evaluate_indicators(indicators: dict) -> str:
     elif indicators['bollinger_breakout'] == 'down':
         score_short += 2
 
+    # === Stochastic RSI ===
+    if indicators['stochrsi_k'] < 20 and indicators['stochrsi_d'] < 20:
+        score_long += 1
+    elif indicators['stochrsi_k'] > 80 and indicators['stochrsi_d'] > 80:
+        score_short += 1
+
     # === Απόφαση ===
     if score_long > score_short:
         return 'LONG'
