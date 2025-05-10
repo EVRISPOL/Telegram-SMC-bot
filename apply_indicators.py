@@ -44,7 +44,7 @@ def calculate_obv(df):
         else:
             obv.append(obv[-1])
 
-    df['OBV'] = obv  # ✅ τώρα έχει ίδιο μήκος με το df
+    df['obv_trend'] = obv  # ✅ τώρα έχει ίδιο μήκος με το df
     df['obv_trend'] = df['OBV'].diff().apply(lambda x: 'up' if x > 0 else 'down' if x < 0 else 'flat')
     return df
 
