@@ -51,7 +51,16 @@ async def receive_capital(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def receive_mtf(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["mtf"] = update.message.text.strip()
-   
+
+    valid_timeframes = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '12h', '1d', '1w']
+    if value.lower() not in valid_timeframes and value.lower() != "skip":
+        await update.message.reply_text("❌ Λάθος MTF timeframe. Επιτρεπτά: 15m, 1h, 4h, 1d... Ή πληκτρολόγησε 'skip'.")  # Η εντολη αυτη εχει να κανει με το custom του mtf 
+        return MTF
+
+    user_data["mtf"] = value.lower()
+    await update.message.reply_text("✅ Καταχωρήθηκε το MTF timeframe.")
+    return ConversationHandler.END
+
  # Λήψη candlesticks από Binance
     symbol = context.user_data["symbol"]
     timeframe = context.user_data["timeframe"]
@@ -99,6 +108,7 @@ try:
     conf_lines.append("\\n🧭 MTF Confirmation:") #αυτη η εντολη σχετιζεται με το confirmation που θα υπαρχει στην αναλυση για το mtf 
     for key, value in mtf_result.items():
         conf_lines.append(f"- {key}: {value}")
+    
 
     response = "\n".join(conf_lines)
     chart = generate_chart(df, symbol, signal, entry, sl, tp1, tp2, tp3)
