@@ -80,8 +80,10 @@ def apply_indicators(df):
     df = calculate_vwap(df)
     print("Μετά το VWAP:", len(df))
 
+    print("📍 ΠΡΙΝ το OBV:", len(df))
     df = calculate_obv(df)
     print("Μετά το OBV:", len(df))
+    print("📍 Μήκος OBV στήλης:", len(df['OBV']))
 
     df = calculate_atr(df)
     print("Μετά το ATR:", len(df))
