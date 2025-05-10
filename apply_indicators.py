@@ -81,9 +81,9 @@ def calculate_stochastic_rsi(df, period=14, smooth_k=3, smooth_d=3):
     return df
 
 def calculate_adx(df, period=14):
-    high = df['high'].astype(float)
-    low = df['low'].astype(float)
-    close = df['close'].astype(float)
+    high = df['high']
+    low = df['low']
+    close = df['close']
 
     plus_dm = high.diff()
     minus_dm = low.diff()
@@ -95,7 +95,6 @@ def calculate_adx(df, period=14):
     tr2 = (high - close.shift()).abs()
     tr3 = (low - close.shift()).abs()
     tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
-
     atr = tr.rolling(window=period).mean()
 
     plus_di = 100 * (plus_dm.rolling(window=period).mean() / atr)
@@ -104,9 +103,8 @@ def calculate_adx(df, period=14):
     dx = (abs(plus_di - minus_di) / (plus_di + minus_di)) * 100
     adx = dx.rolling(window=period).mean()
 
-    df['adx'] = adx.fillna(0)
+    df['adx'] = adx
     return df
-
 
 def apply_indicators(df):
     df = calculate_rsi(df)
