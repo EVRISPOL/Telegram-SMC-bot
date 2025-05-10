@@ -1,3 +1,6 @@
+import sys   # Διαχείριση των path της Python (sys.path) για import modules από άλλους φακέλους
+import os    # Λήψη του τρέχοντος directory και δημιουργία πλήρους (absolute) path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))) # Προσθέτουμε το root directory στο path για να δουλεύουν τα imports από φακέλους όπως trade_levels.py
 from telegram import Update, ReplyKeyboardRemove
 from telegram.ext import (
     ContextTypes,
