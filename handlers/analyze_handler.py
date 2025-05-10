@@ -114,6 +114,7 @@ try:
     await update.message.reply_photo(photo=chart, caption=response, reply_markup=ReplyKeyboardRemove())
     await update.message.reply_text(summary, reply_markup=ReplyKeyboardRemove())    # Στέλνει απάντηση κειμένου στον χρήστη στο Telegram. = Είναι η μεταβλητή που περιέχει το τελικό μήνυμα που θέλεις να του στείλεις. Π.χ. περίληψη της ανάλυσης.
     return ConversationHandler.END
+
 except Exception as e:
     await update.message.reply_text(f"❌ Σφάλμα κατά την ανάλυση: {str(e)}", reply_markup=ReplyKeyboardRemove())
     return ConversationHandler.END
