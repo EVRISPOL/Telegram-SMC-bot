@@ -1,5 +1,5 @@
 
-from indicators import (
+from apply_indicators import (
     calculate_rsi,
     calculate_macd,
     calculate_ema_ribbon,
