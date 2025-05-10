@@ -1,4 +1,5 @@
 # Prepare the fully corrected chart_generator.py with the timestamp fix
+import os
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime
