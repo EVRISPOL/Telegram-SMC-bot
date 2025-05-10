@@ -70,10 +70,30 @@ def calculate_bollinger_bands(df, period=20, std_dev=2):
 
 def apply_indicators(df):
     df = calculate_rsi(df)
+    print("Μετά το RSI:", len(df))
+
     df = calculate_macd(df)
+    print("Μετά το MACD:", len(df))
+
     df = calculate_ema_ribbon(df)
+    print("Μετά το EMA Ribbon:", len(df))
+
     df = calculate_vwap(df)
+    print("Μετά το VWAP:", len(df))
+
     df = calculate_obv(df)
+    print("Μετά το OBV:", len(df))
+
     df = calculate_atr(df)
+    print("Μετά το ATR:", len(df))
+
     df = calculate_bollinger_bands(df)
+    print("Μετά το Bollinger Bands:", len(df))
+
+    df = calculate_stochastic_rsi(df)
+    print("Μετά το Stochastic RSI:", len(df))
+
+    df = calculate_adx(df)
+    print("Μετά το ADX:", len(df))
+
     return df
