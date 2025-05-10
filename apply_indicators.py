@@ -80,6 +80,34 @@ def calculate_stochastic_rsi(df, period=14, smooth_k=3, smooth_d=3):
     df['stochrsi_d'] = df['stochrsi_k'].rolling(window=smooth_d).mean()
     return df
 
+def calculate_adx(df, period=14):
+    high = df['high']
+    low = df['low']
+    close = df['close']
+
+    plus_dm = high.diff()
+    minus_dm = low.diff()
+
+    plus_dm = plus_dm.where((plus_dm > minus_dm) & (plus_dm > 0), 0.0)
+    minus_dm = minus_dm.where((minus_dm > plus_dm) & (minus_dm > 0), 0.0)
+
+    tr1 = high - low
+    tr2 = (high - close.shift()).abs()
+    tr3 = (low - close.shift()).abs()
+    tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+
+    atr = tr.rolling(window=period).mean()
+
+    plus_di = 100 * (plus_dm.rolling(window=period).mean() / atr)
+    minus_di = 100 * (minus_dm.rolling(window=period).mean() / atr)
+
+    dx = (abs(plus_di - minus_di) / (plus_di + minus_di)) * 100
+    adx = dx.rolling(window=period).mean()
+
+    df['adx'] = adx.fillna(0)
+    return df
+
+
 def apply_indicators(df):
     df = calculate_rsi(df)
     print("Μετά το RSI:", len(df))
