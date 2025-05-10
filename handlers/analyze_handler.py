@@ -78,6 +78,7 @@ async def finalize_analysis(update: Update, context: ContextTypes.DEFAULT_TYPE):
             'macd_cross': last['MACD_Cross'],
             'macd_histogram': last['MACD_Hist'],
             'obv_trend': last['OBV_Trend'],
+            'obv': last['OBV'],
             'price': last['close'],
             'vwap': last['VWAP'],
             'ema_trend': last['EMA_Trend'],
