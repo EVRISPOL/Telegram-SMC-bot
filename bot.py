@@ -1,7 +1,6 @@
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 from handlers.analyze_handler import get_analyze_handler #για τις επιλογες που υπαρχουν στην /analyze π.χ(πληκτρολογησε το symbol) 
-from handlers.analyze_handler import analyze #για την εντολη /analyze απο handler analyze.py
 from handlers.autosignal_handler import autosignal #για την εντολη /autosignal απο handler autosignal.py
 from handlers.price_handler import price  #δεδομενα binance
 from handlers.price_handler import price #για δεδομενα binance απο price handler
