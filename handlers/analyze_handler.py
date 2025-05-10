@@ -87,7 +87,7 @@ async def finalize_analysis(update: Update, context: ContextTypes.DEFAULT_TYPE):
             'bollinger_breakout': last['Boll_Breakout'],
             'stochrsi_k': last['StochRSI_K'],
             'stochrsi_d': last['StochRSI_D'],
-            'adx': last['ADX'],
+            'adx': last['adx'], 
         }
 
         signal = evaluate_indicators(indicators)
