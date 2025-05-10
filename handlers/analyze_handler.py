@@ -1,24 +1,23 @@
-from telegram import Update, ReplyKeyboardRemove 
-from telegram.ext import ( #για τις επιλογες που υπαρχουν στο tele π.χ(πληκτρολογησε το symbol. κλπ)
+from telegram import Update, ReplyKeyboardRemove
+from telegram.ext import (
     ContextTypes,
     ConversationHandler,
     CommandHandler,
     MessageHandler,
     filters,
 )
-from binance_utils import get_klines #για την ληψη των candlesticks #### Η get_klines() είναι μια Python συνάρτηση που δημιουργήσαμε για να τραβάει ιστορικά candlesticks (κεριά) από το Binance API.
-from mtf_checker import check_mtf_confirmation #κανουμε import το αρχειο checker mtf για να υπαρχει η επιλογη mtf timeframe στην επιλογη /analyze
-from evaluate_indicators import evaluate_indicators  #import σχεδιασμένο να αξιολογεί αυτόματα LONG ή SHORT σήματα με βάση όλους τους δείκτες ποιο αναλυτικα με αριθμους! περισσοτερες πληροφοριες στο evaluate indicators! ΕΙΝΑΙ STRATEGY
-from apply_indicators import apply_indicators #import απο το αρχειο apple indicator για να παραγονται αυτοματα οι δεικτες στο signal 
-from trade_levels import calculate_trade_levels #import απο το αρχειο trade levels = υπολογισμος stop loss tp1 tp2 tp3! 
-from chart_generator import generate_chart #import απο το chart generator για την εμφανιση εικονας chart στην ολοκληρωση της αναλυσης
-
-async def analyze(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Εδώ θα υλοποιηθεί η λογική για την εντολή /analyze
-    pass
+from binance_utils import get_klines
+from mtf_checker import check_mtf_confirmation
+from evaluate_indicators import evaluate_indicators
+from apply_indicators import apply_indicators
+from trade_levels import calculate_trade_levels
+from chart_generator import generate_chart
 
 # Βήματα
 SYMBOL, TIMEFRAME, LEVERAGE, RISK, CAPITAL, MTF = range(6)
+
+async def analyze(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    pass
 
 async def analyze_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🪙 Πληκτρολόγησε το symbol (π.χ. BTCUSDT):")
@@ -50,27 +49,28 @@ async def receive_capital(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return MTF
 
 async def receive_mtf(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    context.user_data["mtf"] = update.message.text.strip()
-
+    value = update.message.text.strip()
     valid_timeframes = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '12h', '1d', '1w']
+
     if value.lower() not in valid_timeframes and value.lower() != "skip":
-        await update.message.reply_text("❌ Λάθος MTF timeframe. Επιτρεπτά: 15m, 1h, 4h, 1d... Ή πληκτρολόγησε 'skip'.")  # Η εντολη αυτη εχει να κανει με το custom του mtf 
+        await update.message.reply_text("❌ Λάθος MTF timeframe. Επιτρεπτά: 15m, 1h, 4h, 1d... Ή πληκτρολόγησε 'skip'.")
         return MTF
 
-    user_data["mtf"] = value.lower()
+    context.user_data["mtf"] = value.lower()
     await update.message.reply_text("✅ Καταχωρήθηκε το MTF timeframe.")
-    return ConversationHandler.END
+    return await finalize_analysis(update, context)
 
- # Λήψη candlesticks από Binance
-    symbol = context.user_data["symbol"]
-    timeframe = context.user_data["timeframe"]
+async def finalize_analysis(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    try:
+        user_data = context.user_data
+        symbol = user_data["symbol"]
+        timeframe = user_data["timeframe"]
 
-try:
-    df = get_klines(symbol, interval=timeframe) #φέρνει τα candlesticks από Binance
-    df = apply_indicators(df) #εφαρμόζει όλους τους δείκτες πάνω στο dataframe (RSI, MACD, VWAP, ATR, κ.λπ.)
-    
-    last = df.iloc[-1]
-    indicators = {
+        df = get_klines(symbol, interval=timeframe)
+        df = apply_indicators(df)
+
+        last = df.iloc[-1]
+        indicators = {
             'rsi': last['RSI'],
             'macd_cross': last['MACD_Cross'],
             'macd_histogram': last['MACD_Hist'],
@@ -83,42 +83,47 @@ try:
             'bollinger_breakout': last['Boll_Breakout'],
             'stochrsi_k': last['StochRSI_K'],
             'stochrsi_d': last['StochRSI_D'],
-            'adx': last['ADX'], 
-    }
+            'adx': last['ADX'],
+        }
 
-    signal = evaluate_indicators(indicators) #σχεδιασμένο να αξιολογεί αυτόματα LONG ή SHORT σήματα με βάση όλους τους δείκτες ποιο αναλυτικα με αριθμους! περισσοτερες πληροφοριες στο evaluate indicators! ΕΙΝΑΙ STRATEGY
-    entry, sl, tp1, tp2, tp3 = calculate_trade_levels(df, signal) #εφαρμοζει το entry stop loss tp1 tp2 απο αρχειο trade level με βάσει του σήματος LONG ή SHORT και του ATR.
-    
-    mtf_result = None
-    if user_data.get("mtf") and user_data["mtf"].lower() != "skip":
-        mtf_result = check_mtf_confirmation(symbol, user_data["mtf"], signal)
+        signal = evaluate_indicators(indicators)
+        entry, sl, tp1, tp2, tp3 = calculate_trade_levels(df, signal)
 
-    conf_lines = [f"📢 Signal: {signal}", #σχετιζονατι με το αρχειο trade level 
-                  f"🎯 Entry: {entry}",
-                  f"🛑 SL: {sl}",
-                  f"🎯 TP1: {tp1}",
-                  f"🎯 TP2: {tp2}",
-                  f"🎯 TP3: {tp3}",
-                  f"\\n📊 Confirmations:"]
+        mtf_result = None
+        if user_data.get("mtf") and user_data["mtf"].lower() != "skip":
+            mtf_result = check_mtf_confirmation(symbol, user_data["mtf"], signal)
 
-    for key, value in indicators.items(): #σχετιζεται με το evaluate_indicator
-        conf_lines.append(f"- {key}: {val}")
+        conf_lines = [
+            f"📢 Signal: {signal}",
+            f"🎯 Entry: {entry}",
+            f"🛑 SL: {sl}",
+            f"🎯 TP1: {tp1}",
+            f"🎯 TP2: {tp2}",
+            f"🎯 TP3: {tp3}",
+            f"\n📊 Confirmations:"
+        ]
 
-    if mtf_result:
-        conf_lines.append("\\n🧭 MTF Confirmation:") #αυτη η εντολη σχετιζεται με το confirmation που θα υπαρχει στην αναλυση για το mtf 
-        for key, value in mtf_result.items():
-            conf_lines.append(f"- {key}: {value}")
-    
-    response = "\n".join(conf_lines)
-    chart = generate_chart(df, symbol, signal, entry, sl, tp1, tp2, tp3)
-    await update.message.reply_photo(photo=chart, caption=response, reply_markup=ReplyKeyboardRemove())
-    await update.message.reply_text(summary, reply_markup=ReplyKeyboardRemove())    # Στέλνει απάντηση κειμένου στον χρήστη στο Telegram. = Είναι η μεταβλητή που περιέχει το τελικό μήνυμα που θέλεις να του στείλεις. Π.χ. περίληψη της ανάλυσης.
-    return ConversationHandler.END
+        for key, val in indicators.items():
+            conf_lines.append(f"- {key}: {val}")
 
-except Exception as e:
-    await update.message.reply_text(f"❌ Σφάλμα κατά την ανάλυση: {str(e)}", reply_markup=ReplyKeyboardRemove())
-    return ConversationHandler.END
-      
+        if mtf_result:
+            conf_lines.append("\n🧭 MTF Confirmation:")
+            for key, val in mtf_result.items():
+                conf_lines.append(f"- {key}: {val}")
+
+        response = "\n".join(conf_lines)
+        chart = generate_chart(df, symbol, signal, entry, sl, tp1, tp2, tp3)
+
+        await update.message.reply_photo(photo=chart, caption=response, reply_markup=ReplyKeyboardRemove())
+        summary = f"📈 Ολοκληρώθηκε η ανάλυση για {symbol}."
+        await update.message.reply_text(summary, reply_markup=ReplyKeyboardRemove())
+
+        return ConversationHandler.END
+
+    except Exception as e:
+        await update.message.reply_text(f"❌ Σφάλμα κατά την ανάλυση: {str(e)}", reply_markup=ReplyKeyboardRemove())
+        return ConversationHandler.END
+
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("❌ Η ανάλυση ακυρώθηκε.", reply_markup=ReplyKeyboardRemove())
     return ConversationHandler.END
