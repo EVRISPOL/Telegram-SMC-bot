@@ -71,6 +71,8 @@ try:
             'atr': last['ATR'],
             'atr_sma': df['ATR'].rolling(14).mean().iloc[-1],
             'bollinger_breakout': last['Boll_Breakout'],
+            'stochrsi_k': last['StochRSI_K'],
+            'stochrsi_d': last['StochRSI_D'],
     }
 
     signal = evaluate_indicators(indicators) #σχεδιασμένο να αξιολογεί αυτόματα LONG ή SHORT σήματα με βάση όλους τους δείκτες ποιο αναλυτικα με αριθμους! περισσοτερες πληροφοριες στο evaluate indicators! ΕΙΝΑΙ STRATEGY
