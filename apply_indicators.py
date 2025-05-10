@@ -37,15 +37,15 @@ def calculate_vwap(df):
 def calculate_obv(df):
     obv = [0]
     for i in range(1, len(df)):
-        if df['close'].iloc[i] > df['close'].iloc[i-1]:
+        if df['close'].iloc[i] > df['close'].iloc[i - 1]:
             obv.append(obv[-1] + df['volume'].iloc[i])
-        elif df['close'].iloc[i] < df['close'].iloc[i-1]:
+        elif df['close'].iloc[i] < df['close'].iloc[i - 1]:
             obv.append(obv[-1] - df['volume'].iloc[i])
         else:
             obv.append(obv[-1])
-    df['OBV'] = obv
-    df['OBV_Trend'] = ['up' if df['OBV'].iloc[i] > df['OBV'].iloc[i-1] else 'down' for i in range(1, len(df))]
-    df['OBV_Trend'] = ['none'] + df['OBV_Trend']  # align with length
+
+    df['OBV'] = obv  # ✅ τώρα έχει ίδιο μήκος με το df
+    df['obv_trend'] = df['OBV'].diff().apply(lambda x: 'up' if x > 0 else 'down' if x < 0 else 'flat')
     return df
 
 def calculate_atr(df, period=14):
