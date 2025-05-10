@@ -45,7 +45,7 @@ def calculate_obv(df):
             obv.append(obv[-1])
 
     df['obv_trend'] = obv  # ✅ τώρα έχει ίδιο μήκος με το df
-    df['obv_trend'] = df['OBV'].diff().apply(lambda x: 'up' if x > 0 else 'down' if x < 0 else 'flat')
+    df['obv_trend'] = df['obv_trend'].diff().apply(lambda x: 'up' if x > 0 else 'down' if x < 0 else 'flat')
     return df
 
 def calculate_atr(df, period=14):
