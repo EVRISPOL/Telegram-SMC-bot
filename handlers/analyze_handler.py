@@ -92,10 +92,10 @@ try:
     await update.message.reply_photo(photo=chart, caption=response, reply_markup=ReplyKeyboardRemove())
     return ConversationHandler.END
       
-        response = "\n".join(conf_lines)
-    except Exception as e:
-        response = f"❌ Σφάλμα κατά την ανάλυση: {str(e)}"
-
+except Exception as e:
+    await update.message.reply_text(f"❌ Σφάλμα κατά την ανάλυση: {str(e)}", reply_markup=ReplyKeyboardRemove())
+    return ConversationHandler.END
+      
     await update.message.reply_text(summary, reply_markup=ReplyKeyboardRemove())
     return ConversationHandler.END
 
