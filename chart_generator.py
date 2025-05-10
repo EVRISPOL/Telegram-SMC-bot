@@ -1,4 +1,4 @@
-
+# Prepare the fully corrected chart_generator.py with the timestamp fix
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime
@@ -6,7 +6,7 @@ import io
 
 def generate_chart(df, symbol, signal, entry, sl, tp1, tp2, tp3):
     df = df.tail(100)  # Πάρε τα τελευταία 100 candlesticks
-    df['timestamp'] = df.index
+    df['timestamp'] = mdates.date2num(df.index)  # Μετατροπή datetime σε float για matplotlib
 
     fig, ax = plt.subplots(figsize=(10, 5))
 
@@ -45,3 +45,13 @@ def generate_chart(df, symbol, signal, entry, sl, tp1, tp2, tp3):
     plt.close()
 
     return buf
+"""
+
+# Save the corrected version to file
+chart_generator_path = "/mnt/data/Telegram-SMC-bot-main/chart_generator.py"
+os.makedirs(os.path.dirname(chart_generator_path), exist_ok=True)
+
+with open(chart_generator_path, "w", encoding="utf-8") as f:
+    f.write(corrected_chart_generator)
+
+chart_generator_path
