@@ -118,11 +118,11 @@ except Exception as e:
 return ConversationHandler.END
       
     await update.message.reply_text(summary, reply_markup=ReplyKeyboardRemove())
-    return ConversationHandler.END
+return ConversationHandler.END
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("❌ Η ανάλυση ακυρώθηκε.", reply_markup=ReplyKeyboardRemove())
-    return ConversationHandler.END
+return ConversationHandler.END
 
 def get_analyze_handler():
     return ConversationHandler(
