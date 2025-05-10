@@ -10,7 +10,6 @@ from handlers.start_handler import start
 def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("price", price)) #δεδομενα binance
-    app.add_handler(CommandHandler("analyze", analyze)) #για την εντολη /analyze απο handler analyze.py
     app.add_handler(CommandHandler("autosignal", autosignal)) #για την εντολη /autosignal απο handler autosignal.py
     app.add_handler(get_analyze_handler()) #για τις επιλογες που υπαρχουν στην /analyze π.χ(πληκτρολογησε το symbol) 
 
