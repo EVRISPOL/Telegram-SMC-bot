@@ -68,6 +68,14 @@ def evaluate_indicators(indicators: dict) -> str:
     elif indicators['stochrsi_k'] > 80 and indicators['stochrsi_d'] > 80:
         score_short += 1
 
+    # === ADX ===
+    if indicators['adx'] < 20:
+        score_long -= 1
+        score_short -= 1
+    elif indicators['adx'] > 25:
+        score_long += 1
+        score_short += 1
+
     # === Απόφαση ===
     if score_long > score_short:
         return 'LONG'
