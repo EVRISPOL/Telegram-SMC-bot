@@ -21,11 +21,9 @@ def calculate_macd(df):
     df['MACD'] = macd
     df['MACD_Signal'] = signal
     df['MACD_Hist'] = hist
-
-    macd_cross = ['bullish' if m > s else 'bearish' for m, s in zip(macd, signal)]
-    macd_cross = pd.Series(macd_cross, index=df.index[-len(macd_cross):])
-    df['MACD_Cross'] = macd_cross.reindex(df.index, method='ffill')
+    df['MACD_Cross'] = ['bullish' if m > s else 'bearish' for m, s in zip(macd, signal)]
     return df
+
 
 def calculate_ema_ribbon(df):
     ema_values = [8, 13, 21, 34, 55]
