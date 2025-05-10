@@ -105,8 +105,8 @@ try:
         conf_lines.append(f"- {key}: {val}")
 
     if mtf_result:
-    conf_lines.append("\\n🧭 MTF Confirmation:") #αυτη η εντολη σχετιζεται με το confirmation που θα υπαρχει στην αναλυση για το mtf 
-    for key, value in mtf_result.items():
+        conf_lines.append("\\n🧭 MTF Confirmation:") #αυτη η εντολη σχετιζεται με το confirmation που θα υπαρχει στην αναλυση για το mtf 
+        for key, value in mtf_result.items():
         conf_lines.append(f"- {key}: {value}")
     
 
