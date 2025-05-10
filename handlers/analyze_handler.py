@@ -109,7 +109,7 @@ try:
         for key, value in mtf_result.items():
             conf_lines.append(f"- {key}: {value}")
     
-
+try:
     response = "\n".join(conf_lines)
     chart = generate_chart(df, symbol, signal, entry, sl, tp1, tp2, tp3)
     await update.message.reply_photo(photo=chart, caption=response, reply_markup=ReplyKeyboardRemove())
