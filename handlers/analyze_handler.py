@@ -115,7 +115,7 @@ try:
           
 except Exception as e:
     await update.message.reply_text(f"❌ Σφάλμα κατά την ανάλυση: {str(e)}", reply_markup=ReplyKeyboardRemove())
-    return ConversationHandler.END
+return ConversationHandler.END
       
     await update.message.reply_text(summary, reply_markup=ReplyKeyboardRemove())
     return ConversationHandler.END
