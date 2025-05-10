@@ -7,8 +7,8 @@ from telegram.ext import ( #για τις επιλογες που υπαρχου
     filters,
 )
 from binance_utils import get_klines #για την ληψη των candlesticks #### Η get_klines() είναι μια Python συνάρτηση που δημιουργήσαμε για να τραβάει ιστορικά candlesticks (κεριά) από το Binance API.
-from analyze_indicators import apply_indicators #import απο το αρχειο analyze indicator για να παραγονται αυτοματα οι δεικτες στο signal 
-from signal_decision import decide_signal #import απο το αρχειο signal_decision = υπολογιζει αυτοματα στην αναλυση long/short
+from evaluate_indicators import evaluate_indicators  #import σχεδιασμένο να αξιολογεί αυτόματα LONG ή SHORT σήματα με βάση όλους τους δείκτες ποιο αναλυτικα με αριθμους! περισσοτερες πληροφοριες στο evaluate indicators! ΕΙΝΑΙ STRATEGY
+from apply_indicators import apply_indicators #import απο το αρχειο apple indicator για να παραγονται αυτοματα οι δεικτες στο signal 
 from trade_levels import calculate_trade_levels #import απο το αρχειο trade levels = υπολογισμος stop loss tp1 tp2 tp3! 
 from chart_generator import generate_chart #import απο το chart generator για την εμφανιση εικονας chart στην ολοκληρωση της αναλυσης
 
@@ -58,7 +58,22 @@ async def receive_mtf(update: Update, context: ContextTypes.DEFAULT_TYPE):
 try:
     df = get_klines(symbol, interval=timeframe) #φέρνει τα candlesticks από Binance
     df = apply_indicators(df) #εφαρμόζει όλους τους δείκτες πάνω στο dataframe (RSI, MACD, VWAP, ATR, κ.λπ.)
-    signal, confirmations = decide_signal(df) #Εξετάζει το τελευταίο candlestick και στην συνεχεια δινει τα confirmation στους δεικτες
+    
+    last = df.iloc[-1]
+    indicators = {
+            'rsi': last['RSI'],
+            'macd_cross': last['MACD_Cross'],
+            'macd_histogram': last['MACD_Hist'],
+            'obv_trend': last['OBV_Trend'],
+            'price': last['close'],
+            'vwap': last['VWAP'],
+            'ema_trend': last['EMA_Trend'],
+            'atr': last['ATR'],
+            'atr_sma': df['ATR'].rolling(14).mean().iloc[-1],
+            'bollinger_breakout': last['Boll_Breakout'],
+    }
+
+    signal = evaluate_indicators(indicators) #σχεδιασμένο να αξιολογεί αυτόματα LONG ή SHORT σήματα με βάση όλους τους δείκτες ποιο αναλυτικα με αριθμους! περισσοτερες πληροφοριες στο evaluate indicators! ΕΙΝΑΙ STRATEGY
     entry, sl, tp1, tp2, tp3 = calculate_trade_levels(df, signal) #εφαρμοζει το entry stop loss tp1 tp2 απο αρχειο trade level με βάσει του σήματος LONG ή SHORT και του ATR.
 
     conf_lines = [f"📢 Signal: {signal}", #σχετιζονατι με το αρχειο trade level 
@@ -68,24 +83,18 @@ try:
                   f"🎯 TP2: {tp2}",
                   f"🎯 TP3: {tp3}",
                   f"\\n📊 Confirmations:"]
-    for key, value in confirmations.items():
-        if value == "LONG":
-            icon = "✅ LONG"
-        elif value == "SHORT":
-            icon = "🔻 SHORT"
-        elif value == "NONE":
-            icon = "✅ NONE"
-        else:
-            icon = f"🔸 {value}"
-        conf_lines.append(f"- {key}: {icon}")
-        
+
+    for key, value in indicators.items(): #σχετιζεται με το evaluate_indicator
+        conf_lines.append(f"- {key}: {val}")
+
+    response = "\n".join(conf_lines)
+    chart = generate_chart(df, symbol, signal, entry, sl, tp1, tp2, tp3)
+    await update.message.reply_photo(photo=chart, caption=response, reply_markup=ReplyKeyboardRemove())
+    return ConversationHandler.END
+      
         response = "\n".join(conf_lines)
     except Exception as e:
         response = f"❌ Σφάλμα κατά την ανάλυση: {str(e)}"
-
-    chart = generate_chart(df, symbol, signal, entry, sl, tp1, tp2, tp3)  #import απο το chart generator για την εμφανιση εικονας chart στην ολοκληρωση της αναλυσης
-    await update.message.reply_photo(photo=chart, caption=response, reply_markup=ReplyKeyboardRemove())
-    return ConversationHandler.END
 
     await update.message.reply_text(summary, reply_markup=ReplyKeyboardRemove())
     return ConversationHandler.END
