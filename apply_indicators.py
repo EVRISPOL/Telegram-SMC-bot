@@ -100,7 +100,7 @@ def apply_indicators(df):
     df = calculate_bollinger_bands(df)
     df = calculate_stochastic_rsi(df)
     return df
-"""
+
 
 # Write the corrected code back to the file
 output_path = "/mnt/data/Telegram-SMC-bot-main/Telegram-SMC-bot-main/apply_indicators.py"
