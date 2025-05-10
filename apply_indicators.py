@@ -68,6 +68,23 @@ def calculate_bollinger_bands(df, period=20, std_dev=2):
                            for c, u, l in zip(df['close'], upper, lower)]
     return df
 
+def calculate_stochastic_rsi(df, period=14):
+    delta = df['close'].diff()
+    gain = delta.where(delta > 0, 0)
+    loss = -delta.where(delta < 0, 0)
+
+    avg_gain = gain.rolling(window=period).mean()
+    avg_loss = loss.rolling(window=period).mean()
+
+    rs = avg_gain / avg_loss
+    rsi = 100 - (100 / (1 + rs))
+
+    stoch_rsi = (rsi - rsi.rolling(period).min()) / (rsi.rolling(period).max() - rsi.rolling(period).min())
+    df['StochRSI_K'] = stoch_rsi * 100
+    df['StochRSI_D'] = df['StochRSI_K'].rolling(3).mean()
+
+    return df
+
 def apply_indicators(df):
     df = calculate_rsi(df)
     df = calculate_macd(df)
@@ -76,4 +93,5 @@ def apply_indicators(df):
     df = calculate_obv(df)
     df = calculate_atr(df)
     df = calculate_bollinger_bands(df)
+    df = calculate_stochastic_rsi(df)
     return df
