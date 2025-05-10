@@ -114,14 +114,13 @@ try:
     await update.message.reply_photo(photo=chart, caption=response, reply_markup=ReplyKeyboardRemove())
     await update.message.reply_text(summary, reply_markup=ReplyKeyboardRemove())    # Στέλνει απάντηση κειμένου στον χρήστη στο Telegram. = Είναι η μεταβλητή που περιέχει το τελικό μήνυμα που θέλεις να του στείλεις. Π.χ. περίληψη της ανάλυσης.
     return ConversationHandler.END
-
 except Exception as e:
     await update.message.reply_text(f"❌ Σφάλμα κατά την ανάλυση: {str(e)}", reply_markup=ReplyKeyboardRemove())
-return ConversationHandler.END
+    return ConversationHandler.END
       
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("❌ Η ανάλυση ακυρώθηκε.", reply_markup=ReplyKeyboardRemove())
-return ConversationHandler.END
+    return ConversationHandler.END
 
 def get_analyze_handler():
     return ConversationHandler(
