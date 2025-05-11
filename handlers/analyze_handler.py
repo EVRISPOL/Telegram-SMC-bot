@@ -13,7 +13,7 @@ from chart_generator import generate_chart
 # Conversation states
 SYMBOL, TIMEFRAME, LEVERAGE, RISK, CAPITAL, MTF = range(6)
 
-ADMIN_USER_ID = 123456789  # Αντικατάστησέ το με το δικό σου ID
+ADMIN_USER_ID = 7316121101  # Αντικατάστησέ το με το δικό σου ID
 
 INDICATOR_WEIGHTS = {
     'rsi': 2.0,
