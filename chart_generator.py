@@ -3,9 +3,9 @@ import matplotlib.dates as mdates
 import io
 
 def generate_chart(df, symbol, signal, entry, sl, tp1, tp2, tp3):
-    df = df.tail(100)
-    df['timestamp'] = mdates.date2num(df.index)  # Convert datetime index to float for matplotlib
-
+    df = df.tail(100).copy()  # ✅ παίρνουμε ακριβές αντίγραφο
+    df['timestamp'] = mdates.date2num(df.index)  # ✅ ασφαλές πλέον
+                                                       
     fig, ax = plt.subplots(figsize=(10, 5))
 
     # Candlesticks
