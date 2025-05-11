@@ -207,9 +207,8 @@ def get_analyze_handler():
         },
         fallbacks=[CommandHandler("cancel", cancel)],
     )
-"""
+
 
 # Αποθήκευση αρχείου
 output_path = Path("/mnt/data/analyze_handler_ready_full.py")
-output_path.write_text(full_code_with_handler)
 output_path.name
