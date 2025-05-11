@@ -1,5 +1,6 @@
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from telegram.ext import CallbackQueryHandler
 from handlers.analyze_handler import show_details_callback
 from handlers.analyze_handler import get_analyze_handler #για τις επιλογες που υπαρχουν στην /analyze π.χ(πληκτρολογησε το symbol) 
 from handlers.autosignal_handler import autosignal #για την εντολη /autosignal απο handler autosignal.py
