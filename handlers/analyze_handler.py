@@ -162,8 +162,21 @@ async def show_details_callback(update, context):
         await query.message.reply_text("Δεν έχεις πρόσβαση.")
 
 def generate_detailed_report(ind, signal, win_percent):
-    return f"""**[ Τεχνική Ανάλυση - Πλήρες Report ]**
+    confirmation = {
+        'RSI': ind['rsi'] < 30 if signal == 'LONG' else ind['rsi'] > 70,
+        'MACD': ind['macd_cross'] == ('bullish' if signal == 'LONG' else 'bearish'),
+        'EMA Trend': ind['ema_trend'] == ('bullish' if signal == 'LONG' else 'bearish'),
+        'VWAP': ind['price'] > ind['vwap'] if signal == 'LONG' else ind['price'] < ind['vwap'],
+        'ADX': ind['adx'] > 25,
+        'OBV Trend': ind['obv_trend'] == ('up' if signal == 'LONG' else 'down'),
+        'ATR': ind['atr'] < ind['atr_sma'],
+        'Bollinger': ind['bollinger_breakout'] == ('up' if signal == 'LONG' else 'down'),
+        'MTF Trend': mtf_result
+    }
 
+    confirmation_lines = "\\n".join([f"• {k}: {'✅' if v else '❌'}" for k, v in confirmations.items()])
+
+    return f"""**[ Τεχνική Ανάλυση - Πλήρες Report ]**
 
 📊 Κατεύθυνση Τάσης
 RSI: {ind['rsi']} → {'Oversold ❗' if ind['rsi'] < 30 else 'Overbought ❗' if ind['rsi'] > 70 else ''}  
