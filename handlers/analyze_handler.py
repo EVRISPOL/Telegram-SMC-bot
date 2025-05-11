@@ -1,7 +1,19 @@
+# Δημιουργία του πλήρους αρχείου με την προσθήκη της συνάρτησης get_analyze_handler
+from pathlib import Path
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove
-from telegram.ext import ConversationHandler, CallbackQueryHandler
+from telegram.ext import ConversationHandler, CallbackQueryHandler, CommandHandler, MessageHandler, filters
 
-ADMIN_USER_ID = 123456789  # Αντικατέστησε με το δικό σου ID
+from binance_utils import get_klines
+from mtf_checker import check_mtf_confirmation
+from evaluate_indicators import evaluate_indicators
+from apply_indicators import apply_indicators
+from trade_levels import calculate_trade_levels
+from chart_generator import generate_chart
+
+# Conversation states
+SYMBOL, TIMEFRAME, LEVERAGE, RISK, CAPITAL, MTF = range(6)
+
+ADMIN_USER_ID = 123456789  # Αντικατάστησέ το με το δικό σου ID
 
 INDICATOR_WEIGHTS = {
     'rsi': 2.0,
@@ -25,11 +37,52 @@ def calculate_win_percent(indicators, signal):
         'stochrsi': indicators['stochrsi_k'] < 20 and indicators['stochrsi_d'] < 20 if signal == 'LONG' else indicators['stochrsi_k'] > 80 and indicators['stochrsi_d'] > 80,
         'bollinger': indicators['bollinger_breakout'] == ('up' if signal == 'LONG' else 'down')
     }
-    
+
     total_possible = sum(INDICATOR_WEIGHTS.values())
     win_score = sum(INDICATOR_WEIGHTS[k] for k, v in results.items() if v)
     win_percent = round((win_score / total_possible) * 100, 1)
     return win_percent, results
+
+async def analyze_start(update, context):
+    await update.message.reply_text("🪙 Πληκτρολόγησε το symbol (π.χ. BTCUSDT):")
+    return SYMBOL
+
+async def receive_symbol(update, context):
+    context.user_data["symbol"] = update.message.text.strip().upper()
+    await update.message.reply_text("⏱️ Πληκτρολόγησε το timeframe (π.χ. 15m, 1h):")
+    return TIMEFRAME
+
+async def receive_timeframe(update, context):
+    context.user_data["timeframe"] = update.message.text.strip()
+    await update.message.reply_text("📈 Πληκτρολόγησε το leverage (π.χ. 10):")
+    return LEVERAGE
+
+async def receive_leverage(update, context):
+    context.user_data["leverage"] = update.message.text.strip()
+    await update.message.reply_text("⚠️ Πληκτρολόγησε το risk % (π.χ. 2):")
+    return RISK
+
+async def receive_risk(update, context):
+    context.user_data["risk"] = update.message.text.strip()
+    await update.message.reply_text("💰 Πληκτρολόγησε το capital (π.χ. 300):")
+    return CAPITAL
+
+async def receive_capital(update, context):
+    context.user_data["capital"] = update.message.text.strip()
+    await update.message.reply_text("📊 Πληκτρολόγησε το MTF timeframe (ή γράψε skip):")
+    return MTF
+
+async def receive_mtf(update, context):
+    value = update.message.text.strip()
+    valid_timeframes = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '12h', '1d', '1w']
+
+    if value.lower() not in valid_timeframes and value.lower() != "skip":
+        await update.message.reply_text("❌ Λάθος MTF timeframe. Επιτρεπτά: 15m, 1h, 4h, 1d... Ή πληκτρολόγησε 'skip'.")
+        return MTF
+
+    context.user_data["mtf"] = value.lower()
+    await update.message.reply_text("✅ Καταχωρήθηκε το MTF timeframe.")
+    return await finalize_analysis(update, context)
 
 async def finalize_analysis(update, context):
     try:
@@ -70,17 +123,17 @@ async def finalize_analysis(update, context):
             mtf_result = check_mtf_confirmation(symbol, user_data["mtf"], signal)
 
         response = (
-            f"📢 Signal: {signal}\n"
-            f"🎯 Entry: {entry}\n"
-            f"🛑 SL: {sl}\n"
-            f"🎯 TP1: {tp1}\n"
-            f"🎯 TP2: {tp2}\n"
-            f"🎯 TP3: {tp3}\n\n"
-            f"✅ Confirmations: {confirmation_count} / {total_confirmations}\n"
-            f"🎯 AI WIN Prediction:\n"
-            f"• TP1: {win_percent}%\n"
-            f"• TP2: {max(win_percent - 10, 0)}%\n"
-            f"• TP3: {max(win_percent - 20, 0)}%\n"
+            f"📢 Signal: {signal}\\n"
+            f"🎯 Entry: {entry}\\n"
+            f"🛑 SL: {sl}\\n"
+            f"🎯 TP1: {tp1}\\n"
+            f"🎯 TP2: {tp2}\\n"
+            f"🎯 TP3: {tp3}\\n\\n"
+            f"✅ Confirmations: {confirmation_count} / {total_confirmations}\\n"
+            f"🎯 AI WIN Prediction:\\n"
+            f"• TP1: {win_percent}%\\n"
+            f"• TP2: {max(win_percent - 10, 0)}%\\n"
+            f"• TP3: {max(win_percent - 20, 0)}%\\n"
             f"• SL: {100 - win_percent}%"
         )
 
@@ -109,7 +162,7 @@ async def show_details_callback(update, context):
         await query.message.reply_text("Δεν έχεις πρόσβαση.")
 
 def generate_detailed_report(ind, signal, win_percent):
-    return f"""
+    return f\"\"\"
 **[ Τεχνική Ανάλυση - Πλήρες Report ]**
 
 📊 Κατεύθυνση Τάσης
@@ -136,4 +189,27 @@ Bollinger: {ind['bollinger_breakout']} breakout
 • TP2: {max(win_percent - 10, 0)}%
 • TP3: {max(win_percent - 20, 0)}%
 • SL: {100 - win_percent}%
+\"\"\"
+
+def cancel(update, context):
+    return ConversationHandler.END
+
+def get_analyze_handler():
+    return ConversationHandler(
+        entry_points=[CommandHandler("analyze", analyze_start)],
+        states={
+            SYMBOL: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_symbol)],
+            TIMEFRAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_timeframe)],
+            LEVERAGE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_leverage)],
+            RISK: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_risk)],
+            CAPITAL: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_capital)],
+            MTF: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_mtf)],
+        },
+        fallbacks=[CommandHandler("cancel", cancel)],
+    )
 """
+
+# Αποθήκευση αρχείου
+output_path = Path("/mnt/data/analyze_handler_ready_full.py")
+output_path.write_text(full_code_with_handler)
+output_path.name
