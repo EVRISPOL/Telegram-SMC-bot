@@ -189,7 +189,7 @@ Bollinger: {ind['bollinger_breakout']} breakout
 • TP2: {max(win_percent - 10, 0)}%
 • TP3: {max(win_percent - 20, 0)}%
 • SL: {100 - win_percent}%
-\"\"\"
+"""
 
 def cancel(update, context):
     return ConversationHandler.END
