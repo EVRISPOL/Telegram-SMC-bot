@@ -174,7 +174,7 @@ def generate_detailed_report(ind, signal, win_percent, mtf_result=True):
         'MTF Trend': mtf_result
     }
 
-    confirmation_lines = "\\n".join([f"• {k}: {'✅' if v else '❌'}" for k, v in confirmations.items()])
+    confirmations_lines = "\\n".join([f"• {k}: {'✅' if v else '❌'}" for k, v in confirmations.items()])
 
     return f"""**[ Τεχνική Ανάλυση - Πλήρες Report ]**
 
