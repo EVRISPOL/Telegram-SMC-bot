@@ -162,7 +162,7 @@ async def show_details_callback(update, context):
         await query.message.reply_text("Δεν έχεις πρόσβαση.")
 
 def generate_detailed_report(ind, signal, win_percent):
-    return return f\"\"\"  # χωρίς κανένα escape
+    return f"""
 **[ Τεχνική Ανάλυση - Πλήρες Report ]**
 
 📊 Κατεύθυνση Τάσης
