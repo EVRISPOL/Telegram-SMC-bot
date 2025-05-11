@@ -1,5 +1,6 @@
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from handlers.analyze_handler import show_details_callback
 from handlers.analyze_handler import get_analyze_handler #για τις επιλογες που υπαρχουν στην /analyze π.χ(πληκτρολογησε το symbol) 
 from handlers.autosignal_handler import autosignal #για την εντολη /autosignal απο handler autosignal.py
 from handlers.price_handler import price  #δεδομενα binance
@@ -12,6 +13,7 @@ def main():
     app.add_handler(CommandHandler("price", price)) #δεδομενα binance
     app.add_handler(CommandHandler("autosignal", autosignal)) #για την εντολη /autosignal απο handler autosignal.py
     app.add_handler(get_analyze_handler()) #για τις επιλογες που υπαρχουν στην /analyze π.χ(πληκτρολογησε το symbol) 
+    app.add_handler(CallbackQueryHandler(show_details_callback, pattern="show_details"))
 
     app.add_handler(CommandHandler("start", start))
 
