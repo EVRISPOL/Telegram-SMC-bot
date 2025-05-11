@@ -162,8 +162,8 @@ async def show_details_callback(update, context):
         await query.message.reply_text("Δεν έχεις πρόσβαση.")
 
 def generate_detailed_report(ind, signal, win_percent):
-    return f"""
-**[ Τεχνική Ανάλυση - Πλήρες Report ]**
+    return f"""**[ Τεχνική Ανάλυση - Πλήρες Report ]**
+
 
 📊 Κατεύθυνση Τάσης
 RSI: {ind['rsi']} → {'Oversold ❗' if ind['rsi'] < 30 else 'Overbought ❗' if ind['rsi'] > 70 else ''}  
@@ -208,7 +208,3 @@ def get_analyze_handler():
         fallbacks=[CommandHandler("cancel", cancel)],
     )
 
-
-# Αποθήκευση αρχείου
-output_path = Path("/mnt/data/analyze_handler_ready_full.py")
-output_path.name
