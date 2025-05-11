@@ -130,6 +130,7 @@ async def finalize_analysis(update, context):
             f"🎯 TP2: {tp2}\\n"
             f"🎯 TP3: {tp3}\\n\\n"
             f"✅ Confirmations: {confirmation_count} / {total_confirmations}\\n"
+            f"📊 MTF Trend: {'✅ Συμφωνία' if mtf_result else '❌ Διαφωνία'}\\n"
             f"🎯 AI WIN Prediction:\\n"
             f"• TP1: {win_percent}%\\n"
             f"• TP2: {max(win_percent - 10, 0)}%\\n"
