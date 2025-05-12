@@ -1,5 +1,10 @@
-import pandas as pd
+# Σκοπός: Εφαρμόζει όλους τους βασικούς τεχνικούς δείκτες
+# (RSI, MACD, EMA, VWAP, OBV, ATR, Bollinger, StochRSI, ADX)
+# πάνω σε ένα DataFrame με δεδομένα candlesticks.
+# Χρησιμοποιείται από το trading bot για τη λήψη αποφάσεων.
 
+import pandas as pd
+# Υπολογισμός RSI (Relative Strength Index)
 def calculate_rsi(df, period=14):
     delta = df['close'].diff()
     gain = delta.clip(lower=0)
@@ -9,7 +14,7 @@ def calculate_rsi(df, period=14):
     rs = avg_gain / avg_loss
     df['RSI'] = 100 - (100 / (1 + rs))
     return df
-
+# Υπολογισμός MACD (με histogram και bullish/bearish cross)
 def calculate_macd(df):
     exp1 = df['close'].ewm(span=12, adjust=False).mean()
     exp2 = df['close'].ewm(span=26, adjust=False).mean()
@@ -21,7 +26,7 @@ def calculate_macd(df):
     df['MACD_Hist'] = hist
     df['MACD_Cross'] = ['bullish' if m > s else 'bearish' for m, s in zip(macd, signal)]
     return df
-
+# Υπολογισμός EMA Ribbon και προσδιορισμός τάσης (bullish/bearish)
 def calculate_ema_ribbon(df):
     ema_values = [8, 13, 21, 34, 55]
     for period in ema_values:
@@ -29,11 +34,11 @@ def calculate_ema_ribbon(df):
     # trend: bullish if short EMA > long EMA
     df['EMA_Trend'] = ['bullish' if df['EMA_8'].iloc[i] > df['EMA_55'].iloc[i] else 'bearish' for i in range(len(df))]
     return df
-
+# Υπολογισμός VWAP (Volume Weighted Average Price)
 def calculate_vwap(df):
     df['VWAP'] = (df['close'] * df['volume']).cumsum() / df['volume'].cumsum()
     return df
-
+# Υπολογισμός OBV (On Balance Volume) και της τάσης του
 def calculate_obv(df):
     obv = [0]
     for i in range(1, len(df)):
@@ -47,7 +52,7 @@ def calculate_obv(df):
     df['OBV'] = obv  # ✅ τώρα έχει ίδιο μήκος με το df
     df['OBV_Trend'] = df['OBV'].diff().apply(lambda x: 'up' if x > 0 else 'down' if x < 0 else 'flat')
     return df
-
+# Υπολογισμός ATR (Average True Range) για εκτίμηση μεταβλητότητας
 def calculate_atr(df, period=14):
     high_low = df['high'] - df['low']
     high_close = (df['high'] - df['close'].shift()).abs()
@@ -55,7 +60,7 @@ def calculate_atr(df, period=14):
     tr = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)
     df['ATR'] = tr.rolling(window=period).mean()
     return df
-
+# Υπολογισμός Bollinger Bands και ελέγχει για breakout
 def calculate_bollinger_bands(df, period=20, std_dev=2):
     sma = df['close'].rolling(window=period).mean()
     std = df['close'].rolling(window=period).std()
@@ -66,7 +71,7 @@ def calculate_bollinger_bands(df, period=20, std_dev=2):
     df['Boll_Breakout'] = ['up' if c > u else 'down' if c < l else 'none'
                            for c, u, l in zip(df['close'], upper, lower)]
     return df
-
+# Υπολογισμός Stochastic RSI (K και D γραμμές)
 def calculate_stochastic_rsi(df, period=14, smooth_k=3, smooth_d=3):
     delta = df['close'].diff()
     gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
@@ -79,7 +84,7 @@ def calculate_stochastic_rsi(df, period=14, smooth_k=3, smooth_d=3):
     df['StochRSI_K'] = stoch_rsi.rolling(window=smooth_k).mean()
     df['StochRSI_D'] = df['StochRSI_K'].rolling(window=smooth_d).mean()
     return df
-
+# Υπολογισμός ADX (Average Directional Index)
 def calculate_adx(df, period=14):
     high = df['high']
     low = df['low']
@@ -105,6 +110,9 @@ def calculate_adx(df, period=14):
 
     df['adx'] = adx
     return df
+
+# apply_indicators: Εφαρμόζει όλους τους δείκτες βήμα-βήμα
+# και εκτυπώνει το μήκος του df σε κάθε στάδιο για έλεγχο.
 
 def apply_indicators(df):
     df = calculate_rsi(df)
