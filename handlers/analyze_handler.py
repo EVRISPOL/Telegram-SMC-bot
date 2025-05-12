@@ -125,7 +125,7 @@ async def receive_mtf(update, context):
 
     context.user_data["mtf"] = user_input
     await update.message.reply_text("✅ Καταχωρήθηκε το MTF timeframe.")
-    return await finalize_analysis(update, context)
+    return finalize_analysis(update, context)
 
     try:
         user_data = context.user_data
