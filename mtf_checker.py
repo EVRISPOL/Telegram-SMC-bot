@@ -1,8 +1,10 @@
-# Ελέγχει αν η κατεύθυνση (LONG/SHORT) σε μεγαλύτερο timeframe (MTF) συμφωνεί με το προβλεπόμενο σήμα.     # Περιγραφή:
-    #Η συνάρτηση λαμβάνει:
-    #- symbol: Το κρυπτονόμισμα (π.χ. BTCUSDT)
-    #- mtf_timeframe: Το μεγαλύτερο timeframe (π.χ. 1h, 4h)
-    # - expected_direction: Η κατεύθυνση σήματος από μικρότερο timeframe ('long' ή 'short')
+# Ελέγχει αν η κατεύθυνση (LONG/SHORT) σε μεγαλύτερο timeframe (MTF) συμφωνεί με το προβλεπόμενο σήμα.     
+# Περιγραφή:
+# Η συνάρτηση λαμβάνει:
+# symbol: Το κρυπτονόμισμα (π.χ. BTCUSDT)
+# mtf_timeframe: Το μεγαλύτερο timeframe (π.χ. 1h, 4h)
+# expected_direction: Η κατεύθυνση σήματος από μικρότερο timeframe ('long' ή 'short')
+
 from binance_utils import get_klines
 from apply_indicators import calculate_macd, calculate_ema_ribbon
 
