@@ -1,25 +1,31 @@
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 from telegram.ext import CallbackQueryHandler
-from handlers.analyze_handler import show_details_callback
-from handlers.analyze_handler import get_analyze_handler #για τις επιλογες που υπαρχουν στην /analyze π.χ(πληκτρολογησε το symbol) 
-from handlers.autosignal_handler import autosignal #για την εντολη /autosignal απο handler autosignal.py
-from handlers.price_handler import price  #δεδομενα binance
-from handlers.price_handler import price #για δεδομενα binance απο price handler
-from config import BOT_TOKEN
-from handlers.start_handler import start
 
+from handlers.analyze_handler import show_details_callback   # Callback για εμφάνιση αναλυτικού report
+from handlers.analyze_handler import get_analyze_handler     # Handler για τη ροή εντολής /analyze (symbol, timeframe, capital κ.λπ.)
+from handlers.autosignal_handler import autosignal           # Συνάρτηση που στέλνει αυτόματα signals (/autosignal)
+from handlers.price_handler import price                     # Συνάρτηση που απαντά με την τρέχουσα τιμή (/price)
+from config import BOT_TOKEN                                 # Το token του bot από αρχείο config
+from handlers.start_handler import start                     # Συνάρτηση για το /start μήνυμα
+
+ # 🚀 Κύρια συνάρτηση που ξεκινάει το bot
 def main():
+     # Δημιουργία εφαρμογής με το BOT_TOKEN
     app = ApplicationBuilder().token(BOT_TOKEN).build()
-    app.add_handler(CommandHandler("price", price)) #δεδομενα binance
-    app.add_handler(CommandHandler("autosignal", autosignal)) #για την εντολη /autosignal απο handler autosignal.py
-    app.add_handler(get_analyze_handler()) #για τις επιλογες που υπαρχουν στην /analyze π.χ(πληκτρολογησε το symbol) 
+    # 💰 Εντολή /price – Επιστρέφει την τρέχουσα τιμή από Binance
+    app.add_handler(CommandHandler("price", price)) 
+    # 📡 Εντολή /autosignal – Στέλνει αυτόματα ανιχνευμένα σήματα αγοράς
+    app.add_handler(CommandHandler("autosignal", autosignal))
+    # 🧠 Εντολή /analyze – Εκκίνηση ροής ανάλυσης (symbol, timeframe, leverage, κ.λπ.)
+    app.add_handler(get_analyze_handler())
+    # ℹ️ Callback όταν πατηθεί το κουμπί "Στοιχεία" για εμφάνιση πλήρους ανάλυσης (μόνο admin)
     app.add_handler(CallbackQueryHandler(show_details_callback, pattern="show_details"))
-
+    # 👋 Εντολή /start – Καλωσόρισμα του χρήστη
     app.add_handler(CommandHandler("start", start))
-
+     # ✅ Μήνυμα επιβεβαίωσης ότι το bot τρέχει
     print("✅ Bot is running...")
     app.run_polling()
-
+# Αν το αρχείο τρέχει ως main script, ξεκίνα το bot
 if __name__ == "__main__":
     main()
