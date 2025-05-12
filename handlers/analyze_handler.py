@@ -116,17 +116,18 @@ async def receive_capital(update, context):
 
 # Λήψη MTF timeframe ή skip
 async def receive_mtf(update, context):
-    user_input = update.message.text.strip().lower()
+    value = update.message.text.strip()
     valid_timeframes = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '12h', '1d', '1w']
 
-    if user_input not in valid_timeframes and user_input != "skip":
-        await update.message.reply_text("❗ Μη έγκυρο MTF timeframe. Πληκτρολόγησε π.χ. 1h, 4h, 1d ή γράψε 'skip':")
-        return MTF  # Ξαναζητά MTF
+    if value.lower() not in valid_timeframes and value.lower() != "skip":
+        await update.message.reply_text("❌ Λάθος MTF timeframe. Επιτρεπτά: 15m, 1h, 4h, 1d... Ή πληκτρολόγησε 'skip'.")
+        return MTF
 
-    context.user_data["mtf"] = user_input
+    context.user_data["mtf"] = value.lower()
     await update.message.reply_text("✅ Καταχωρήθηκε το MTF timeframe.")
-    return finalize_analysis(update, context)
+    return await finalize_analysis(update, context)
 
+async def finalize_analysis(update, context):
     try:
         user_data = context.user_data
         symbol = user_data["symbol"]
