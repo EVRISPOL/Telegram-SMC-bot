@@ -53,38 +53,80 @@ async def receive_symbol(update, context):
     return TIMEFRAME
 # Λήψη timeframe
 async def receive_timeframe(update, context):
-    context.user_data["timeframe"] = update.message.text.strip()
+    user_input = update.message.text.strip().lower()
+    valid_timeframes = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '12h', '1d', '1w']
+
+    if user_input not in valid_timeframes:
+        await update.message.reply_text("❗ Μη έγκυρο timeframe. Πληκτρολόγησε ένα από τα: 1m, 3m, 5m, 15m, 1h, 4h, 1d...")
+        return TIMEFRAME  # Επαναλαμβάνει το ίδιο βήμα
+
+    context.user_data["timeframe"] = user_input
     await update.message.reply_text("📈 Πληκτρολόγησε το leverage (π.χ. 10):")
     return LEVERAGE
 # Λήψη leverage
 async def receive_leverage(update, context):
-    context.user_data["leverage"] = update.message.text.strip()
-    await update.message.reply_text("⚠️ Πληκτρολόγησε το risk % (π.χ. 2):")
-    return RISK
+    user_input = update.message.text.strip()
+    # Έλεγχος αν είναι θετικός αριθμός
+    try:
+        leverage = float(user_input)
+        if leverage <= 0:
+            raise ValueError
+        # Αποθήκευση στο context
+        context.user_data["leverage"] = leverage
+        await update.message.reply_text("⚠️ Πληκτρολόγησε το risk % (π.χ. 2):")
+        return RISK
+
+    except ValueError:
+        await update.message.reply_text("❗ Μη έγκυρο leverage. Πληκτρολόγησε έναν θετικό αριθμό π.χ. 10:")
+        return LEVERAGE  # Επαναλαμβάνει το ίδιο βήμα
+
 # Λήψη ποσοστού ρίσκου
 async def receive_risk(update, context):
-    context.user_data["risk"] = update.message.text.strip()
-    await update.message.reply_text("💰 Πληκτρολόγησε το capital (π.χ. 300):")
-    return CAPITAL
+    user_input = update.message.text.strip()
+    # Έλεγχος αν είναι αριθμός μεταξύ 0 και 100
+    try:
+        risk = float(user_input)
+        if risk <= 0 or risk > 100:
+            raise ValueError
+
+        context.user_data["risk"] = risk
+        await update.message.reply_text("💰 Πληκτρολόγησε το capital (π.χ. 300):")
+        return CAPITAL
+
+    except ValueError:
+        await update.message.reply_text("❗ Μη έγκυρο ποσοστό ρίσκου. Πληκτρολόγησε έναν αριθμό από 1 έως 100 (π.χ. 2):")
+        return RISK  # Επαναλαμβάνει το ίδιο βήμα
+
 # Λήψη κεφαλαίου
 async def receive_capital(update, context):
-    context.user_data["capital"] = update.message.text.strip()
-    await update.message.reply_text("📊 Πληκτρολόγησε το MTF timeframe (ή γράψε skip):")
-    return MTF
-# Λήψη MTF timeframe ή skip
-async def receive_mtf(update, context):
-    value = update.message.text.strip()
-    valid_timeframes = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '12h', '1d', '1w']
+    user_input = update.message.text.strip()
+    # Έλεγχος αν είναι θετικός αριθμός
+    try:
+        capital = float(user_input)
+        if capital <= 0:
+            raise ValueError
 
-    if value.lower() not in valid_timeframes and value.lower() != "skip":
-        await update.message.reply_text("❌ Λάθος MTF timeframe. Επιτρεπτά: 15m, 1h, 4h, 1d... Ή πληκτρολόγησε 'skip'.")
+        context.user_data["capital"] = capital
+        await update.message.reply_text("📊 Πληκτρολόγησε το MTF timeframe (ή γράψε skip):")
         return MTF
 
-    context.user_data["mtf"] = value.lower()
+    except ValueError:
+        await update.message.reply_text("❗ Μη έγκυρο κεφάλαιο. Πληκτρολόγησε έναν θετικό αριθμό π.χ. 300:")
+        return CAPITAL  # Επαναλαμβάνει το ίδιο βήμα
+
+# Λήψη MTF timeframe ή skip
+async def receive_mtf(update, context):
+    user_input = update.message.text.strip().lower()
+    valid_timeframes = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '12h', '1d', '1w']
+
+    if user_input not in valid_timeframes and user_input != "skip":
+        await update.message.reply_text("❗ Μη έγκυρο MTF timeframe. Πληκτρολόγησε π.χ. 1h, 4h, 1d ή γράψε 'skip':")
+        return MTF  # Ξαναζητά MTF
+
+    context.user_data["mtf"] = user_input
     await update.message.reply_text("✅ Καταχωρήθηκε το MTF timeframe.")
     return await finalize_analysis(update, context)
-# Τελική ανάλυση – εφαρμόζει δείκτες, κάνει εκτίμηση σήματος και απαντά με chart
-async def finalize_analysis(update, context):
+
     try:
         user_data = context.user_data
         symbol = user_data["symbol"]
