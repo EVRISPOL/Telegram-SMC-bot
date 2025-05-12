@@ -129,8 +129,8 @@ async def finalize_analysis(update, context):
         position_size = capital * leverage
   
         # Συνάρτηση υπολογισμού κέρδους για κάθε TP
-    def calculate_profit(entry, target, size):
-        return round((size * (target - entry) / entry), 2)
+        def calculate_profit(entry, target, size):
+            return round((size * (target - entry) / entry), 2)
 
         # Υπολογισμός κερδών ανά TP
         profit_tp1 = calculate_profit(entry, tp1, position_size)
