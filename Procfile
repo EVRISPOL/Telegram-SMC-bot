@@ -1,1 +1,1 @@
-worker: python bot.py
+worker: python backtest_evaluator.py
