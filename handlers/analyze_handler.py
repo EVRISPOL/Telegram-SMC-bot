@@ -122,14 +122,28 @@ async def finalize_analysis(update, context):
         mtf_result = None
         if user_data.get("mtf") and user_data["mtf"].lower() != "skip":
             mtf_result = check_mtf_confirmation(symbol, user_data["mtf"], signal)
+        # Υπολογισμός μεγέθους θέσης
+        capital = float(user_data["capital"])
+        risk = float(user_data["risk"])
+        leverage = float(user_data["leverage"])
+        position_size = capital * leverage
+  
+# Συνάρτηση υπολογισμού κέρδους για κάθε TP
+def calculate_profit(entry, target, size):
+    return round((size * (target - entry) / entry), 2)
+
+        # Υπολογισμός κερδών ανά TP
+        profit_tp1 = calculate_profit(entry, tp1, position_size)
+        profit_tp2 = calculate_profit(entry, tp2, position_size)
+        profit_tp3 = calculate_profit(entry, tp3, position_size)
          # Δημιουργία απάντησης με τα επίπεδα και προβλέψεις
         response = (
             f"📢 Signal: {signal}\\n"
             f"🎯 Entry: {entry}\\n\n"
             f"🛑 SL: {sl}\\n\n"
-            f"🎯 TP1: {tp1}\\n"
-            f"🎯 TP2: {tp2}\\n"
-            f"🎯 TP3: {tp3}\n\n"
+            f"🎯 TP1: {tp1}  (+{profit_tp1}€)\n"
+            f"🎯 TP2: {tp2}  (+{profit_tp2}€)\n"
+            f"🎯 TP3: {tp3}  (+{profit_tp3}€)\n\n"
             f"✅ Confirmations: {confirmation_count} / {total_confirmations}\\n"
             f"📊 MTF Trend: {'✅ Συμφωνία' if mtf_result else '❌ Διαφωνία'}\n\n"
             f"🎯 AI WIN Prediction:\n\n"
