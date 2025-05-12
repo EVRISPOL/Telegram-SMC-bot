@@ -127,7 +127,8 @@ async def finalize_analysis(update, context):
         risk = float(user_data["risk"])
         leverage = float(user_data["leverage"])
         position_size = capital * leverage
-  
+        risk_amount = round(capital * (risk / 100), 2)
+
         # Συνάρτηση υπολογισμού κέρδους για κάθε TP
         def calculate_profit(entry, target, size):
             return round((size * (target - entry) / entry), 2)
@@ -144,6 +145,7 @@ async def finalize_analysis(update, context):
             f"🎯 TP1: {tp1}  (+{profit_tp1}€)\n"
             f"🎯 TP2: {tp2}  (+{profit_tp2}€)\n"
             f"🎯 TP3: {tp3}  (+{profit_tp3}€)\n\n"
+            f"💸 Μέγιστη ζημία (SL): -{risk_amount}€\n"
             f"✅ Confirmations: {confirmation_count} / {total_confirmations}\\n"
             f"📊 MTF Trend: {'✅ Συμφωνία' if mtf_result else '❌ Διαφωνία'}\n\n"
             f"🎯 AI WIN Prediction:\n\n"
