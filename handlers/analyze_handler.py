@@ -50,8 +50,8 @@ def calculate_win_percent(indicators, signal):
             if sl_distance_percent < 0.3:
                 win_percent -= 10
                 win_percent = max(win_percent, 0)
-    except:
-        print(f"[SL Filter Warning] Could not apply SL correction: {e}")
+    except Exception as e:
+        print(f"[SL Filter] Error: {e}")
 
     return win_percent, results
 # Αρχή της συνομιλίας - ζητά symbol
