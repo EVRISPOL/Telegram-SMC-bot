@@ -170,8 +170,8 @@ async def finalize_analysis(update, context):
         # Υπολογισμός Entry, SL, TP
         entry, sl, tp1, tp2, tp3 = calculate_trade_levels(df, signal)
          #Υπολογισμος sl distance_percent για να ειναι ποιο αυστηρο στο sl που δινουν οι δεικτες και να προσαρμωζει το ποσοστο ακομα καλυτερα!
-         indicators["entry"] = trade_data["entry"]
-         indicators["stop_loss"] = trade_data["stop_loss"]
+        indicators["entry"] = trade_data["entry"]
+        indicators["stop_loss"] = trade_data["stop_loss"]
          # Υπολογισμός πιθανότητας επιτυχίας και αριθμός επιβεβαιώσεων
         win_percent, confirmations = calculate_win_percent(indicators, signal)
         confirmation_count = sum(1 for v in confirmations.values() if v)
