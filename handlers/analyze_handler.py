@@ -41,19 +41,6 @@ def calculate_win_percent(indicators, signal):
     total_possible = sum(INDICATOR_WEIGHTS.values())
     win_score = sum(INDICATOR_WEIGHTS[k] for k, v in results.items() if v)
     win_percent = round((win_score / total_possible) * 100, 1)
-        # === Διόρθωση WIN% αν το Stop Loss είναι πολύ κοντά στο Entry === εντολη sl distance ! 
-    try:
-        entry = indicators.get("entry")
-        stop_loss = indicators.get("stop_loss")
-        if entry and stop_loss:
-            sl_distance = abs(entry - stop_loss) / entry * 100
-            if sl_distance < 0.3:
-                win_percent -= 10
-                win_percent = max(win_percent, 0)
-    except Exception as e:
-        print(f"[SL Filter] Applied: SL={stop_loss}, Entry={entry}, Δ%={sl_distance_percent:.2f} → -10% WIN")
-
-
     return win_percent, results
 # Αρχή της συνομιλίας - ζητά symbol
 async def analyze_start(update, context):
@@ -170,8 +157,6 @@ async def finalize_analysis(update, context):
         signal = evaluate_indicators(indicators)
         # Υπολογισμός Entry, SL, TP
         entry, sl, tp1, tp2, tp3 = calculate_trade_levels(df, signal)
-        indicators["entry"] = entry
-        indicators["stop_loss"] = sl
         # Υπολογισμός πιθανότητας επιτυχίας και αριθμός επιβεβαιώσεων
         win_percent, confirmations = calculate_win_percent(indicators, signal)
         confirmation_count = sum(1 for v in confirmations.values() if v)
