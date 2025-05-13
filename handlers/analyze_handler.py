@@ -51,7 +51,8 @@ def calculate_win_percent(indicators, signal):
                 win_percent -= 10
                 win_percent = max(win_percent, 0)
     except Exception as e:
-        print(f"[SL Filter] Error: {e}")
+        import logging
+        logging.warning(f"[SL Filter] Applied: SL={stop_loss}, Entry={entry}, Δ%={sl_distance_percent:.2f} → -10% WIN")
 
     return win_percent, results
 # Αρχή της συνομιλίας - ζητά symbol
