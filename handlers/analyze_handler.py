@@ -43,16 +43,16 @@ def calculate_win_percent(indicators, signal):
     win_percent = round((win_score / total_possible) * 100, 1)
         # === Διόρθωση WIN% αν το Stop Loss είναι πολύ κοντά στο Entry === εντολη sl distance ! 
     try:
-        entry = indicators.get('entry')
-        stop_loss = indicators.get('stop_loss')
+        entry = indicators.get("entry")
+        stop_loss = indicators.get("stop_loss")
         if entry and stop_loss:
-            sl_distance_percent = abs(entry - stop_loss) / entry * 100
-            if sl_distance_percent < 0.3:
+            sl_distance = abs(entry - stop_loss) / entry * 100
+            if sl_distance < 0.3:
                 win_percent -= 10
                 win_percent = max(win_percent, 0)
     except Exception as e:
-        import logging
-        logging.warning(f"[SL Filter] Applied: SL={stop_loss}, Entry={entry}, Δ%={sl_distance_percent:.2f} → -10% WIN")
+        print(f"[SL Filter] Applied: SL={stop_loss}, Entry={entry}, Δ%={sl_distance_percent:.2f} → -10% WIN")
+
 
     return win_percent, results
 # Αρχή της συνομιλίας - ζητά symbol
