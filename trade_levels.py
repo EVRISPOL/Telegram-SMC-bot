@@ -25,8 +25,8 @@ def calculate_trade_levels(df, direction, atr_multiplier=1.5, rr1=1.5, rr2=2.5, 
 
     elif mode == "hybrid":
         swings = find_swing_highs_lows(df)
-        highs = [price for i, price in swings['highs'] if i > df.index[-10]]
-        lows = [price for i, price in swings['lows'] if i > df.index[-10]]
+        highs = [price for i, price in swings['highs'] if df.index[i] > df.index[-10]]
+        lows = [price for i, price in swings['lows'] if df.index[i] > df.index[-10]]
 
         if direction == "LONG":
             rr_targets = [
