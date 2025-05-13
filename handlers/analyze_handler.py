@@ -51,7 +51,7 @@ def calculate_win_percent(indicators, signal):
                 win_percent -= 10
                 win_percent = max(win_percent, 0)
     except:
-        pass  # Σε περίπτωση που λείπουν τα δεδομένα, αγνόησέ το
+        print(f"[SL Filter Warning] Could not apply SL correction: {e}")
 
     return win_percent, results
 # Αρχή της συνομιλίας - ζητά symbol
