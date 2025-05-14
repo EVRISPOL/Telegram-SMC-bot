@@ -176,5 +176,7 @@ def apply_indicators(df):
     df = calculate_tsi(df)
     print("Μετά το TSI:", len(df))
 
+    df = detect_candlestick_patterns(df)
+    print("Μετά το Candlestick Pattern:", len(df))
 
     return df
