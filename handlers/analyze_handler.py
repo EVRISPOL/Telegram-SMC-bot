@@ -326,7 +326,7 @@ def generate_detailed_report(ind, signal, win_percent, mtf_result=True):
         elif signal == 'SHORT' and float(ind['price']) < float(ind['vwap']) and float(ind['price']) < float(ind['poc']):
            alignment_boost = True
     except Exception as e:
-    print(f"⚠️ Σφάλμα στον alignment boost (detailed report): {e}")
+        print(f"⚠️ Σφάλμα στον alignment boost (detailed report): {e}")
     
      # TP Proximity Boost
     tp_proximity_boost = False
