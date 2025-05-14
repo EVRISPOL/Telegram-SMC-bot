@@ -19,9 +19,6 @@ ADMIN_USER_ID = 7316121101  # Αντικατάστησέ το με το δικό
 def calculate_win_percent(indicators, signal):
     adx = indicators['adx'] 
 
-    def calculate_win_percent(indicators, signal):
-    adx = indicators['adx']
-
     if adx < 20:  # Αγορά χωρίς τάση (range)
         weights = {
             'rsi': 2.5,
