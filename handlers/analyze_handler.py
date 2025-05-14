@@ -205,8 +205,14 @@ async def finalize_analysis(update, context):
         timeframe = user_data["timeframe"]
         # Φόρτωση ιστορικών τιμών και εφαρμογή δεικτών
         df = get_klines(symbol, interval=timeframe)
+
+        # ✅ Σιγουρεύσου ότι το 'volume' υπάρχει με σωστό όνομα
+        if 'volume' not in df.columns and 'Volume' in df.columns:
+        df['volume'] = df['Volume']
+
         df = apply_indicators(df)
-        last = df.iloc[-1]
+        last = df.iloc[-1]        
+       
         # Λήψη τιμών δεικτών από τελευταία γραμμή
         indicators = {
             'rsi': last['RSI'],
@@ -226,7 +232,6 @@ async def finalize_analysis(update, context):
             'tsi': last['TSI'],  # ✅ Νέος δείκτης TSI
             'poc': last['POC'],  # ✅ Νέος δείκτης POC
             'candle_pattern': last['candle_pattern'],# ✅νεο 
-            
         }
         # Εκτίμηση LONG ή SHORT σήματος 
         signal = evaluate_indicators(indicators)
