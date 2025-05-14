@@ -16,26 +16,27 @@ SYMBOL, TIMEFRAME, LEVERAGE, RISK, CAPITAL, MTF = range(6)
 ADMIN_USER_ID = 7316121101  # Αντικατάστησέ το με το δικό σου ID
 # Βάρη ανά δείκτη για υπολογισμό WIN %
 # Συνάρτηση που υπολογίζει το ποσοστό επιτυχίας βάσει επιβεβαιώσεων
-def calculate_win_percent(indicators, signal):
+def calculate_win_percent(indicators, signal, mtf_result=True):
     adx = indicators['adx']
 
-    if adx < 20:  # Range αγορά
+    # ⚖️ Δυναμικά βάρη ανά αγορά
+    if adx < 20:  # Range
         weights = {
             'rsi': 2.5, 'macd': 1.0, 'ema_trend': 1.0, 'adx': 0.5,
             'vwap': 1.0, 'obv': 2.0, 'stochrsi': 1.5, 'bollinger': 2.0,
-            'tsi': 1.0, 'poc': 1.5
+            'tsi': 1.0, 'poc': 1.5, 'atr': 0.5, 'mtf': 1.5, 'candle': 1.0
         }
-    elif adx > 25:  # Ισχυρή τάση
+    elif adx > 25:  # Τάση
         weights = {
             'rsi': 1.0, 'macd': 2.5, 'ema_trend': 2.0, 'adx': 2.0,
             'vwap': 2.0, 'obv': 1.0, 'stochrsi': 0.5, 'bollinger': 0.5,
-            'tsi': 2.0, 'poc': 1.5
+            'tsi': 2.0, 'poc': 1.5, 'atr': 1.0, 'mtf': 2.0, 'candle': 1.0
         }
-    else:  # Ενδιάμεση τάση
+    else:  # Neutral
         weights = {
             'rsi': 2.0, 'macd': 2.0, 'ema_trend': 2.0, 'adx': 1.5,
             'vwap': 1.5, 'obv': 1.0, 'stochrsi': 1.0, 'bollinger': 1.0,
-            'tsi': 1.5, 'poc': 1.5
+            'tsi': 1.5, 'poc': 1.5, 'atr': 1.0, 'mtf': 1.5, 'candle': 1.0
         }
 
     results = {
@@ -49,12 +50,15 @@ def calculate_win_percent(indicators, signal):
         'bollinger': indicators['bollinger_breakout'] == ('up' if signal == 'LONG' else 'down'),
         'tsi': indicators['tsi'] > 0 if signal == 'LONG' else indicators['tsi'] < 0,
         'poc': indicators['price'] > indicators['poc'] if signal == 'LONG' else indicators['price'] < indicators['poc'],
+        'atr': indicators['atr'] > indicators['atr_sma'],  # ➕ ΝΕΟ
+        'mtf': mtf_result,                                # ➕ ΝΕΟ
+        'candle': indicators['candle_pattern'] in ['hammer', 'bullish_engulfing'] if signal == 'LONG' else indicators['candle_pattern'] in ['inverted_hammer', 'bearish_engulfing']
     }
 
     total_possible = sum(weights.values())
     win_score = sum(weights[k] for k, v in results.items() if v)
 
-    # 🔸 Alignment Boost (με safe float σύγκριση)
+    # 🔸 Alignment Boost
     try:
         price = float(indicators['price'])
         vwap = float(indicators['vwap'])
@@ -83,19 +87,18 @@ def calculate_win_percent(indicators, signal):
 
     # 🔸 TP Proximity Boost
     try:
-        if signal == 'LONG':
-            if abs(indicators['tp1'] - indicators['swing_high']) < indicators['atr']:
-                print("✅ TP1 κοντά σε swing high (LONG) → boost")
-                win_score += 1
-        elif signal == 'SHORT':
-            if abs(indicators['tp1'] - indicators['swing_low']) < indicators['atr']:
-                print("✅ TP1 κοντά σε swing low (SHORT) → boost")
-                win_score += 1
+        if signal == 'LONG' and abs(indicators['tp1'] - indicators['swing_high']) < indicators['atr']:
+            print("✅ TP1 κοντά σε swing high (LONG) → boost")
+            win_score += 1
+        elif signal == 'SHORT' and abs(indicators['tp1'] - indicators['swing_low']) < indicators['atr']:
+            print("✅ TP1 κοντά σε swing low (SHORT) → boost")
+            win_score += 1
         else:
             print("ℹ️ Δεν πληρούνται οι προϋποθέσεις proximity.")
     except Exception as e:
         print(f"⚠️ Σφάλμα στο TP proximity check: {e}")
 
+    # ➕ Υπολογισμός win%
     win_percent = round((win_score / (total_possible + 3)) * 100, 1)
     return win_percent, results
 
