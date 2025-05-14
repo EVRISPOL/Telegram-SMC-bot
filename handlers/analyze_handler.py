@@ -15,21 +15,53 @@ SYMBOL, TIMEFRAME, LEVERAGE, RISK, CAPITAL, MTF = range(6)
 # ID admin χρήστη για εμφάνιση πλήρους report
 ADMIN_USER_ID = 7316121101  # Αντικατάστησέ το με το δικό σου ID
 # Βάρη ανά δείκτη για υπολογισμό WIN %
-INDICATOR_WEIGHTS = {
-    'rsi': 2.0,
-    'macd': 2.5,
-    'ema_trend': 2.0,
-    'adx': 1.5,
-    'vwap': 1.5,
-    'obv': 1.0,
-    'stochrsi': 0.5,
-    'bollinger': 0.5,
-    'tsi': 1.5,  # ✅ Βάρος TSI
-    'poc': 1.5,  # ✅ Βάρος POC
-
-}
 # Συνάρτηση που υπολογίζει το ποσοστό επιτυχίας βάσει επιβεβαιώσεων
 def calculate_win_percent(indicators, signal):
+    adx = indicators['adx'] 
+
+    def calculate_win_percent(indicators, signal):
+    adx = indicators['adx']
+
+    if adx < 20:  # Αγορά χωρίς τάση (range)
+        weights = {
+            'rsi': 2.5,
+            'macd': 1.0,
+            'ema_trend': 1.0,
+            'adx': 0.5,
+            'vwap': 1.0,
+            'obv': 2.0,
+            'stochrsi': 1.5,
+            'bollinger': 2.0,
+            'tsi': 1.0,
+            'poc': 1.5
+        }
+    elif adx > 25:  # Τάση ισχυρή
+        weights = {
+            'rsi': 1.0,
+            'macd': 2.5,
+            'ema_trend': 2.0,
+            'adx': 2.0,
+            'vwap': 2.0,
+            'obv': 1.0,
+            'stochrsi': 0.5,
+            'bollinger': 0.5,
+            'tsi': 2.0,
+            'poc': 1.5
+        }
+    else:  # Ενδιάμεση ζώνη
+        weights = {
+            'rsi': 2.0,
+            'macd': 2.0,
+            'ema_trend': 2.0,
+            'adx': 1.5,
+            'vwap': 1.5,
+            'obv': 1.0,
+            'stochrsi': 1.0,
+            'bollinger': 1.0,
+            'tsi': 1.5,
+            'poc': 1.5
+        }
+
     results = {
         'rsi': indicators['rsi'] < 30 if signal == 'LONG' else indicators['rsi'] > 70,
         'macd': indicators['macd_cross'] == ('bullish' if signal == 'LONG' else 'bearish'),
