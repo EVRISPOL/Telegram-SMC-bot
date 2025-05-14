@@ -13,7 +13,7 @@ from chart_generator import generate_chart  # Δημιουργία γραφήμ�
 # Ορισμός των καταστάσεων του ConversationHandler
 SYMBOL, TIMEFRAME, LEVERAGE, RISK, CAPITAL, MTF = range(6)
 # ID admin χρήστη για εμφάνιση πλήρους report
-ADMIN_USER_ID = 7316121101  # Αντικατάστησέ το με το δικό σου ID
+ADMIN_USER_IDS = [7316121101, 6721916403]   # Αντικατάστησέ το με το δικό σου ID
 # Βάρη ανά δείκτη για υπολογισμό WIN %
 # Συνάρτηση που υπολογίζει το ποσοστό επιτυχίας βάσει επιβεβαιώσεων
 def calculate_win_percent(indicators, signal, mtf_result=True):
@@ -290,7 +290,7 @@ async def show_details_callback(update, context):
     await query.answer()
     user_id = query.from_user.id
 
-    if user_id == ADMIN_USER_ID:
+    if user_id in ADMIN_USER_IDS:
         full_report = context.user_data.get("full_analysis", "Δεν υπάρχουν δεδομένα.")
         await query.message.reply_text(full_report, parse_mode="Markdown")
     else:
