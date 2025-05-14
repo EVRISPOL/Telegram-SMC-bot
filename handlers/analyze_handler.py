@@ -332,6 +332,14 @@ def generate_detailed_report(ind, signal, win_percent, mtf_result=True):
         alignment_boost = True
     elif signal == 'SHORT' and ind['price'] < ind['vwap'] and ind['price'] < ind['poc']:
         alignment_boost = True
+    
+     # TP Proximity Boost
+    tp_proximity_boost = False
+    try:
+        if signal == 'LONG' and abs(ind['tp1'] - ind['swing_high']) < ind['atr']:
+            tp_proximity_boost = True
+        elif signal == 'SHORT' and abs(ind['tp1'] - ind['swing_low']) < ind['atr']:
+            tp_proximity_boost = True    
 
     return f"""**[ Τεχνική Ανάλυση - Πλήρες Report ]**
 
@@ -367,6 +375,7 @@ POC: {ind['poc']} → Price {'Above' if ind['price'] > ind['poc'] else 'Below'}
 📌 Ενισχυτικά Στοιχεία:
 • Volume Boost: {'✅' if volume_boost else '❌'}
 • POC + VWAP Alignment: {'✅' if alignment_boost else '❌'}
+• TP1 κοντά σε Swing High/Low: {'✅' if tp_proximity_boost else '❌'}
 
 ✅ Επιβεβαιώσεις:
 {confirmations_lines}
