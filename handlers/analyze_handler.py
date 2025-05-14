@@ -77,17 +77,24 @@ def calculate_win_percent(indicators, signal):
     win_score = sum(weights[k] for k, v in results.items() if v)
      # 🔸 Προσθήκη VWAP + POC Alignment
     if signal == 'LONG' and indicators['price'] > indicators['vwap'] and indicators['price'] > indicators['poc']:
+        print("✅ Alignment boost ενεργοποιήθηκε για LONG!")
         win_score += 1
     elif signal == 'SHORT' and indicators['price'] < indicators['vwap'] and indicators['price'] < indicators['poc']:
+        print("✅ Alignment boost ενεργοποιήθηκε για SHORT!")
         win_score += 1
+    else:
+        print("ℹ️ Δεν υπήρξε alignment boost.")
     # 🔸 Προσθήκη Volume Boost
     try:
         current_volume = indicators['volume']
         avg_volume = indicators['avg_volume']
         if current_volume > avg_volume * 1.5:
+            print("✅ Volume boost ενεργοποιήθηκε!")
             win_score += 1
-    except:
-        pass
+        else:
+             print("ℹ️ Volume boost δεν εφαρμόστηκε.")
+    except Exception as e:
+         print(f"⚠️ Σφάλμα στον υπολογισμό volume boost: {e}")  
 
     win_percent = round((win_score / total_possible) * 100, 1)
     return win_percent, results
