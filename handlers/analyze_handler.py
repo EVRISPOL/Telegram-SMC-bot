@@ -208,7 +208,7 @@ async def finalize_analysis(update, context):
         df = apply_indicators(df)
         last = df.iloc[-1]
         # Λήψη τιμών δεικτών από τελευταία γραμμή
-               indicators = {
+        indicators = {
             'rsi': last['RSI'],
             'macd_cross': last['MACD_Cross'],
             'macd_histogram': last['MACD_Hist'],
