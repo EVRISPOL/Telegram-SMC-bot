@@ -338,7 +338,7 @@ except Exception as e:
     except:
         pass
 
-        return f"""**[ Τεχνική Ανάλυση - Πλήρες Report ]**
+    return f"""**[ Τεχνική Ανάλυση - Πλήρες Report ]**
 
 📊 Κατεύθυνση Τάσης
 RSI: {ind['rsi']} → {'Oversold ❗' if ind['rsi'] < 30 else 'Overbought ❗' if ind['rsi'] > 70 else ''}  
