@@ -209,5 +209,9 @@ def apply_indicators(df):
 
     df = detect_candlestick_patterns(df)
     print("Μετά το Candlestick Pattern:", len(df))
+    
+    df['swing_high'] = df['high'].rolling(window=20).max()
+    df['swing_low'] = df['low'].rolling(window=20).min()
+
 
     return df
