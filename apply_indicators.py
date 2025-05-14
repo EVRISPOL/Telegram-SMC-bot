@@ -123,6 +123,20 @@ def calculate_volume_profile(df, bins=40):
         df['POC'] = df['close'].iloc[-1]  # fallback
     return df
 
+def calculate_tsi(df, r=25, s=13):
+    price_change = df['close'].diff()
+    abs_price_change = price_change.abs()
+
+    ema1 = price_change.ewm(span=r, adjust=False).mean()
+    ema2 = ema1.ewm(span=s, adjust=False).mean()
+
+    abs_ema1 = abs_price_change.ewm(span=r, adjust=False).mean()
+    abs_ema2 = abs_ema1.ewm(span=s, adjust=False).mean()
+
+    tsi = 100 * (ema2 / abs_ema2)
+    df['TSI'] = tsi
+    return df
+
 # apply_indicators: Εφαρμόζει όλους τους δείκτες βήμα-βήμα
 # και εκτυπώνει το μήκος του df σε κάθε στάδιο για έλεγχο.
 
@@ -158,5 +172,9 @@ def apply_indicators(df):
 
     df = calculate_volume_profile(df)
     print("Μετά το Volume Profile (POC):", len(df))
+    
+    df = calculate_tsi(df)
+    print("Μετά το TSI:", len(df))
+
 
     return df
