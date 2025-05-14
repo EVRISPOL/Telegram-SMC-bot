@@ -111,6 +111,18 @@ def calculate_adx(df, period=14):
     df['adx'] = adx
     return df
 
+def calculate_volume_profile(df, bins=40):
+    try:
+        price_volume = df[['close', 'volume']].copy()
+        price_volume['price_bin'] = pd.cut(price_volume['close'], bins)
+        grouped = price_volume.groupby('price_bin')['volume'].sum()
+        max_bin = grouped.idxmax()
+        poc_range = max_bin.mid  # Κέντρο του bin
+        df['POC'] = poc_range
+    except Exception as e:
+        df['POC'] = df['close'].iloc[-1]  # fallback
+    return df
+
 # apply_indicators: Εφαρμόζει όλους τους δείκτες βήμα-βήμα
 # και εκτυπώνει το μήκος του df σε κάθε στάδιο για έλεγχο.
 
@@ -143,5 +155,8 @@ def apply_indicators(df):
 
     df = calculate_adx(df)
     print("Μετά το ADX:", len(df))
+
+    df = calculate_volume_profile(df)
+    print("Μετά το Volume Profile (POC):", len(df))
 
     return df
