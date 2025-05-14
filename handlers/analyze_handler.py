@@ -318,11 +318,11 @@ def generate_detailed_report(ind, signal, win_percent, mtf_result=True):
     except:
         pass
     # Νέα Επιβεβαίωση: POC + VWAP alignment
-    alignment_boost = False
-    if signal == 'LONG' and ind['price'] > ind['vwap'] and ind['price'] > ind['poc']:
-        alignment_boost = True
-    elif signal == 'SHORT' and ind['price'] < ind['vwap'] and ind['price'] < ind['poc']:
-        alignment_boost = True
+    if signal == 'LONG' and float(ind['price']) > float(ind['vwap']) and float(ind['price']) > float(ind['poc']):
+       alignment_boost = True
+
+    elif signal == 'SHORT' and float(ind['price']) < float(ind['vwap']) and float(ind['price']) < float(ind['poc']):
+         alignment_boost = True
     
      # TP Proximity Boost
     tp_proximity_boost = False
