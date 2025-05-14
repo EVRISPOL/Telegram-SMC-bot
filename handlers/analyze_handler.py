@@ -205,11 +205,6 @@ async def finalize_analysis(update, context):
         timeframe = user_data["timeframe"]
         # Φόρτωση ιστορικών τιμών και εφαρμογή δεικτών
         df = get_klines(symbol, interval=timeframe)
-
-        print("🧪 Πρώτες 3 γραμμές του df:\n", df.head(3))
-        print("🧪 Πρώτες 3 γραμμές του df:\n", df.head(3))        
-        raw_volume_column = df['volume'].copy()      # Κρατάμε αντίγραφο πριν τα indicators
-
         df = apply_indicators(df)
         last = df.iloc[-1]        
        
@@ -270,30 +265,22 @@ async def finalize_analysis(update, context):
         profit_tp2 = calculate_profit(entry, tp2, position_size)
         profit_tp3 = calculate_profit(entry, tp3, position_size)
         
-        # Κατανομή win_percent στα TP
-        # ✅ Κατανομή win_percent σε TP1, TP2, TP3 με σωστή κατανομή και ρεαλιστικό SL
-        tp1_percent = round(win_percent * 0.4, 2)
-        tp2_percent = round(win_percent * 0.35, 2)
-        tp3_percent = round(win_percent * 0.25, 2)
-        sl_percent = round(100 - (tp1_percent + tp2_percent + tp3_percent), 2)
-
-         # Δημιουργία απάντησης με τα επίπεδα και προβλέψεις
+        # Δημιουργία απάντησης με τα επίπεδα και προβλέψεις
         response = (
             f"📢 Signal: {signal}\\n"
             f"🎯 Entry: {entry}\\n\n"
             f"🛑 SL: {sl}\\n\n"
-            f"• TP1: {win_percent:.2f}%\n"
-            f"• TP2: {max(win_percent - 10, 0):.2f}%\n"
-            f"• TP3: {max(win_percent - 20, 0):.2f}%\n"
-            f"• SL: {100 - win_percent:.2f}%"
+            f"🎯 TP1: {tp1}  (+{profit_tp1}€)\n"
+            f"🎯 TP2: {tp2}  (+{profit_tp2}€)\n"
+            f"🎯 TP3: {tp3}  (+{profit_tp3}€)\n\n"
             f"💸 Μέγιστη ζημία (SL): -{risk_amount}€\n"
             f"✅ Confirmations: {confirmation_count} / {total_confirmations}\\n"
             f"📊 MTF Trend: {'✅ Συμφωνία' if mtf_result else '❌ Διαφωνία'}\n\n"
             f"🎯 AI WIN Prediction:\n\n"
-            f"• TP1: {tp1_percent}%\n"
-            f"• TP2: {tp2_percent}%\n"
-            f"• TP3: {tp3_percent}%\n"
-            f"• SL: -{sl_percent}%"
+            f"• TP1: {round(win_percent, 1)}%\\n"
+            f"• TP2: {round(max(win_percent - 10, 0), 1)}%\\n"
+            f"• TP3: {round(max(win_percent - 20, 0), 1)}%\\n"
+            f"• SL: {round(100 - win_percent, 1)}%"
         )
          # Inline κουμπί για προβολή στοιχείων
         keyboard = [[InlineKeyboardButton("ℹ️ Στοιχεία", callback_data="show_details")]]
