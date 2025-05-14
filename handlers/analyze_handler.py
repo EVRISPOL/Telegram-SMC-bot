@@ -208,7 +208,7 @@ async def finalize_analysis(update, context):
 
         # ✅ Σιγουρεύσου ότι το 'volume' υπάρχει με σωστό όνομα
         if 'volume' not in df.columns and 'Volume' in df.columns:
-        df['volume'] = df['Volume']
+            df['volume'] = df['Volume']
 
         df = apply_indicators(df)
         last = df.iloc[-1]        
