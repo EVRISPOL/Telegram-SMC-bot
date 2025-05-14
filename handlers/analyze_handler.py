@@ -111,7 +111,7 @@ def calculate_win_percent(indicators, signal):
     except Exception as e:
         print(f"⚠️ Σφάλμα στο TP proximity check: {e}")
 
-    win_percent = round((win_score / total_possible + 3)) * 100
+    win_percent = round((win_score / total_possible + 3)) * 100, 1)
     return win_percent, results
 # Αρχή της συνομιλίας - ζητά symbol
 async def analyze_start(update, context):
@@ -234,7 +234,7 @@ async def finalize_analysis(update, context):
         entry, sl, tp1, tp2, tp3 = calculate_trade_levels(df, signal)
         # Εμπλουτισμος των indicators με tp1, atr, swing_high, swing_low volume
         indicators.update({
-            'volume': raw_volume_column.iloc[-1],   # Εξασφαλισμένο volume
+            'volume': last['volume'], # Εξασφαλισμένο volume
             'avg_volume': df['volume'].rolling(20).mean().iloc[-1], #✅ ΝΕΟ
             'tp1': tp1, #✅ ΝΕΟ
             'atr': last['ATR'], #✅ ΝΕΟ
