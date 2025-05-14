@@ -230,10 +230,10 @@ async def finalize_analysis(update, context):
             f"✅ Confirmations: {confirmation_count} / {total_confirmations}\\n"
             f"📊 MTF Trend: {'✅ Συμφωνία' if mtf_result else '❌ Διαφωνία'}\n\n"
             f"🎯 AI WIN Prediction:\n\n"
-            f"• TP1: {round(win_percent, 1)}%\\n"
-            f"• TP2: {round(max(win_percent - 10, 0), 1)}%\\n"
-            f"• TP3: {round(max(win_percent - 20, 0), 1)}%\\n"
-            f"• SL: {round(100 - win_percent, 1)}%"
+            f"• TP1: {win_percent:.2f}%\n"
+            f"• TP2: {max(win_percent - 10, 0):.2f}%\n"
+            f"• TP3: {max(win_percent - 20, 0):.2f}%\n"
+            f"• SL: {100 - win_percent:.2f}%"
         )
          # Inline κουμπί για προβολή στοιχείων
         keyboard = [[InlineKeyboardButton("ℹ️ Στοιχεία", callback_data="show_details")]]
