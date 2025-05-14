@@ -17,46 +17,25 @@ ADMIN_USER_ID = 7316121101  # Αντικατάστησέ το με το δικό
 # Βάρη ανά δείκτη για υπολογισμό WIN %
 # Συνάρτηση που υπολογίζει το ποσοστό επιτυχίας βάσει επιβεβαιώσεων
 def calculate_win_percent(indicators, signal):
-    adx = indicators['adx'] 
+    adx = indicators['adx']
 
-    if adx < 20:  # Αγορά χωρίς τάση (range)
+    if adx < 20:  # Range αγορά
         weights = {
-            'rsi': 2.5,
-            'macd': 1.0,
-            'ema_trend': 1.0,
-            'adx': 0.5,
-            'vwap': 1.0,
-            'obv': 2.0,
-            'stochrsi': 1.5,
-            'bollinger': 2.0,
-            'tsi': 1.0,
-            'poc': 1.5
+            'rsi': 2.5, 'macd': 1.0, 'ema_trend': 1.0, 'adx': 0.5,
+            'vwap': 1.0, 'obv': 2.0, 'stochrsi': 1.5, 'bollinger': 2.0,
+            'tsi': 1.0, 'poc': 1.5
         }
-    elif adx > 25:  # Τάση ισχυρή
+    elif adx > 25:  # Ισχυρή τάση
         weights = {
-            'rsi': 1.0,
-            'macd': 2.5,
-            'ema_trend': 2.0,
-            'adx': 2.0,
-            'vwap': 2.0,
-            'obv': 1.0,
-            'stochrsi': 0.5,
-            'bollinger': 0.5,
-            'tsi': 2.0,
-            'poc': 1.5
+            'rsi': 1.0, 'macd': 2.5, 'ema_trend': 2.0, 'adx': 2.0,
+            'vwap': 2.0, 'obv': 1.0, 'stochrsi': 0.5, 'bollinger': 0.5,
+            'tsi': 2.0, 'poc': 1.5
         }
-    else:  # Ενδιάμεση ζώνη
+    else:  # Ενδιάμεση τάση
         weights = {
-            'rsi': 2.0,
-            'macd': 2.0,
-            'ema_trend': 2.0,
-            'adx': 1.5,
-            'vwap': 1.5,
-            'obv': 1.0,
-            'stochrsi': 1.0,
-            'bollinger': 1.0,
-            'tsi': 1.5,
-            'poc': 1.5
+            'rsi': 2.0, 'macd': 2.0, 'ema_trend': 2.0, 'adx': 1.5,
+            'vwap': 1.5, 'obv': 1.0, 'stochrsi': 1.0, 'bollinger': 1.0,
+            'tsi': 1.5, 'poc': 1.5
         }
 
     results = {
@@ -70,33 +49,39 @@ def calculate_win_percent(indicators, signal):
         'bollinger': indicators['bollinger_breakout'] == ('up' if signal == 'LONG' else 'down'),
         'tsi': indicators['tsi'] > 0 if signal == 'LONG' else indicators['tsi'] < 0,
         'poc': indicators['price'] > indicators['poc'] if signal == 'LONG' else indicators['price'] < indicators['poc'],
-
     }
 
     total_possible = sum(weights.values())
     win_score = sum(weights[k] for k, v in results.items() if v)
-     # 🔸 Προσθήκη VWAP + POC Alignment
-    if signal == 'LONG' and indicators['price'] > indicators['vwap'] and indicators['price'] > indicators['poc']:
-        print("✅ Alignment boost ενεργοποιήθηκε για LONG!")
-        win_score += 1
-    elif signal == 'SHORT' and indicators['price'] < indicators['vwap'] and indicators['price'] < indicators['poc']:
-        print("✅ Alignment boost ενεργοποιήθηκε για SHORT!")
-        win_score += 1
-    else:
-        print("ℹ️ Δεν υπήρξε alignment boost.")
-    # 🔸 Προσθήκη Volume Boost
+
+    # 🔸 Alignment Boost (με safe float σύγκριση)
     try:
-        current_volume = indicators['volume']
-        avg_volume = indicators['avg_volume']
-        if current_volume > avg_volume * 1.5:
+        price = float(indicators['price'])
+        vwap = float(indicators['vwap'])
+        poc = float(indicators['poc'])
+
+        if signal == 'LONG' and price > vwap and price > poc:
+            print("✅ Alignment boost ενεργοποιήθηκε για LONG!")
+            win_score += 1
+        elif signal == 'SHORT' and price < vwap and price < poc:
+            print("✅ Alignment boost ενεργοποιήθηκε για SHORT!")
+            win_score += 1
+        else:
+            print("ℹ️ Δεν υπήρξε alignment boost.")
+    except Exception as e:
+        print(f"⚠️ Σφάλμα στον alignment boost: {e}")
+
+    # 🔸 Volume Boost
+    try:
+        if indicators['volume'] > indicators['avg_volume'] * 1.5:
             print("✅ Volume boost ενεργοποιήθηκε!")
             win_score += 1
         else:
-             print("ℹ️ Volume boost δεν εφαρμόστηκε.")
+            print("ℹ️ Volume boost δεν εφαρμόστηκε.")
     except Exception as e:
-         print(f"⚠️ Σφάλμα στον υπολογισμό volume boost: {e}") 
+        print(f"⚠️ Σφάλμα στον υπολογισμό volume boost: {e}")
 
-        # ➕ Boost για TP proximity σε Swing High/Low
+    # 🔸 TP Proximity Boost
     try:
         if signal == 'LONG':
             if abs(indicators['tp1'] - indicators['swing_high']) < indicators['atr']:
@@ -113,6 +98,7 @@ def calculate_win_percent(indicators, signal):
 
     win_percent = round((win_score / (total_possible + 3)) * 100, 1)
     return win_percent, results
+
 # Αρχή της συνομιλίας - ζητά symbol
 async def analyze_start(update, context):
     await update.message.reply_text("🪙 Πληκτρολόγησε το symbol (π.χ. BTCUSDT):")
