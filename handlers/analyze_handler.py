@@ -75,7 +75,7 @@ def calculate_win_percent(indicators, signal):
 
     total_possible = sum(weights.values())
     win_score = sum(weights[k] for k, v in results.items() if v)
-    win_percent = round((win_score / total_possible) * 100, 1)
+    win_percent = ((win_score / total_possible) * 100, 1)
     return win_percent, results
 # Αρχή της συνομιλίας - ζητά symbol
 async def analyze_start(update, context):
