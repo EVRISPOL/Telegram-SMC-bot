@@ -339,7 +339,9 @@ def generate_detailed_report(ind, signal, win_percent, mtf_result=True):
         if signal == 'LONG' and abs(ind['tp1'] - ind['swing_high']) < ind['atr']:
             tp_proximity_boost = True
         elif signal == 'SHORT' and abs(ind['tp1'] - ind['swing_low']) < ind['atr']:
-            tp_proximity_boost = True    
+            tp_proximity_boost = True 
+    except:
+        pass
 
     return f"""**[ Τεχνική Ανάλυση - Πλήρες Report ]**
 
