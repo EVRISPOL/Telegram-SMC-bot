@@ -73,8 +73,8 @@ def calculate_win_percent(indicators, signal):
 
     }
 
-    total_possible = sum(INDICATOR_WEIGHTS.values())
-    win_score = sum(INDICATOR_WEIGHTS[k] for k, v in results.items() if v)
+    total_possible = sum(weights.values())
+    win_score = sum(weights[k] for k, v in results.items() if v)
     win_percent = round((win_score / total_possible) * 100, 1)
     return win_percent, results
 # Αρχή της συνομιλίας - ζητά symbol
