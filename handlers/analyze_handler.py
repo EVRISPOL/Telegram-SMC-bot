@@ -206,9 +206,8 @@ async def finalize_analysis(update, context):
         # Φόρτωση ιστορικών τιμών και εφαρμογή δεικτών
         df = get_klines(symbol, interval=timeframe)
 
-        # ✅ Σιγουρεύσου ότι το 'volume' υπάρχει με σωστό όνομα
-        if 'volume' not in df.columns and 'Volume' in df.columns:
-            df['volume'] = df['Volume']
+        df['volume'] = df['Volume']                  # Ορίζουμε lowercase volume
+        raw_volume_column = df['volume'].copy()      # Κρατάμε αντίγραφο πριν τα indicators
 
         df = apply_indicators(df)
         last = df.iloc[-1]        
@@ -239,6 +238,7 @@ async def finalize_analysis(update, context):
         entry, sl, tp1, tp2, tp3 = calculate_trade_levels(df, signal)
         # Εμπλουτισμος των indicators με tp1, atr, swing_high, swing_low volume
         indicators.update({
+            'volume': raw_volume_column.iloc[-1],   # Εξασφαλισμένο volume
             'avg_volume': df['volume'].rolling(20).mean().iloc[-1], #✅ ΝΕΟ
             'tp1': tp1, #✅ ΝΕΟ
             'atr': last['ATR'], #✅ ΝΕΟ
