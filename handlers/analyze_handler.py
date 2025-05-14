@@ -269,6 +269,12 @@ async def finalize_analysis(update, context):
         profit_tp1 = calculate_profit(entry, tp1, position_size)
         profit_tp2 = calculate_profit(entry, tp2, position_size)
         profit_tp3 = calculate_profit(entry, tp3, position_size)
+        
+        # Κατανομή win_percent στα TP
+        tp1_percent = round(win_percent * 0.4, 2)
+        tp2_percent = round(win_percent * 0.35, 2)
+        tp3_percent = round(win_percent * 0.25, 2)
+        sl_percent = round(100 - win_percent, 2)
          # Δημιουργία απάντησης με τα επίπεδα και προβλέψεις
         response = (
             f"📢 Signal: {signal}\\n"
@@ -281,10 +287,10 @@ async def finalize_analysis(update, context):
             f"✅ Confirmations: {confirmation_count} / {total_confirmations}\\n"
             f"📊 MTF Trend: {'✅ Συμφωνία' if mtf_result else '❌ Διαφωνία'}\n\n"
             f"🎯 AI WIN Prediction:\n\n"
-            f"• TP1: {win_percent:.2f}%\n"
-            f"• TP2: {max(win_percent - 10, 0):.2f}%\n"
-            f"• TP3: {max(win_percent - 20, 0):.2f}%\n"
-            f"• SL: {100 - win_percent:.2f}%"
+            f"• TP1: {tp1_percent}%\n"
+            f"• TP2: {tp2_percent}%\n"
+            f"• TP3: {tp3_percent}%\n"
+            f"• SL: -{sl_percent}%"
         )
          # Inline κουμπί για προβολή στοιχείων
         keyboard = [[InlineKeyboardButton("ℹ️ Στοιχεία", callback_data="show_details")]]
