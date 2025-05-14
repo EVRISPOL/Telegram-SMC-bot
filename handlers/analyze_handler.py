@@ -206,6 +206,8 @@ async def finalize_analysis(update, context):
         # Φόρτωση ιστορικών τιμών και εφαρμογή δεικτών
         df = get_klines(symbol, interval=timeframe)
 
+        print("🧪 Πρώτες 3 γραμμές του df:\n", df.head(3))
+        print("🧪 Πρώτες 3 γραμμές του df:\n", df.head(3))        
         df['volume'] = df['Volume']                  # Ορίζουμε lowercase volume
         raw_volume_column = df['volume'].copy()      # Κρατάμε αντίγραφο πριν τα indicators
 
