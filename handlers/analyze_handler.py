@@ -75,6 +75,20 @@ def calculate_win_percent(indicators, signal):
 
     total_possible = sum(weights.values())
     win_score = sum(weights[k] for k, v in results.items() if v)
+     # 🔸 Προσθήκη VWAP + POC Alignment
+    if signal == 'LONG' and indicators['price'] > indicators['vwap'] and indicators['price'] > indicators['poc']:
+        win_score += 1
+    elif signal == 'SHORT' and indicators['price'] < indicators['vwap'] and indicators['price'] < indicators['poc']:
+        win_score += 1
+    # 🔸 Προσθήκη Volume Boost
+    try:
+        current_volume = indicators['volume']
+        avg_volume = indicators['avg_volume']
+        if current_volume > avg_volume * 1.5:
+            win_score += 1
+    except:
+        pass
+
     win_percent = round((win_score / total_possible) * 100, 1)
     return win_percent, results
 # Αρχή της συνομιλίας - ζητά symbol
@@ -190,6 +204,8 @@ async def finalize_analysis(update, context):
             'tsi': last['TSI'],  # ✅ Νέος δείκτης TSI
             'poc': last['POC'],  # ✅ Νέος δείκτης POC
             'candle_pattern': last['candle_pattern'],# ✅νεο 
+            'volume': last['volume'], #✅ ΝΕΟ
+            'avg_volume': df['volume'].rolling(20).mean().iloc[-1], #✅ ΝΕΟ
         }
         # Εκτίμηση LONG ή SHORT σήματος 
         signal = evaluate_indicators(indicators)
@@ -277,6 +293,19 @@ def generate_detailed_report(ind, signal, win_percent, mtf_result=True):
     }
 
     confirmations_lines = "\\n".join([f"• {k}: {'✅' if v else '❌'}" for k, v in confirmations.items()])
+     
+    # Νέα Επιβεβαίωση: Volume Boost
+    volume_boost = False
+    try:
+        volume_boost = ind['volume'] > ind['avg_volume'] * 1.5
+    except:
+        pass
+    # Νέα Επιβεβαίωση: POC + VWAP alignment
+    alignment_boost = False
+    if signal == 'LONG' and ind['price'] > ind['vwap'] and ind['price'] > ind['poc']:
+        alignment_boost = True
+    elif signal == 'SHORT' and ind['price'] < ind['vwap'] and ind['price'] < ind['poc']:
+        alignment_boost = True
 
     return f"""**[ Τεχνική Ανάλυση - Πλήρες Report ]**
 
@@ -287,10 +316,11 @@ StochRSI: K={ind['stochrsi_k']} / D={ind['stochrsi_d']} → {'Oversold ❗' if i
 
 📈 Τάση & Κίνηση
 EMA Trend: {ind['ema_trend'].capitalize()}  
-VWAP: {ind['vwap']} → Price {'Above' if ind['price'] > ind['vwap'] else 'Below'}  
+VWAP: {ind['vwap']} → Price {'Above' if ind['price'] > ind['vwap'] else 'Below'} 
 ADX: {ind['adx']} → {'Very Strong Trend ‼️' if ind['adx'] > 25 else 'Weak'}  
 
 📉 Όγκοι / Ροή
+Volume: {ind['volume']} (Avg: {ind['avg_volume']:.2f}) → {'🔥 Υψηλός' if volume_boost else 'OK'}
 OBV: {ind['obv']} (Trend: {ind['obv_trend']})  
 
 🌐 Μεταβλητότητα
@@ -307,6 +337,10 @@ POC: {ind['poc']} → Price {'Above' if ind['price'] > ind['poc'] else 'Below'}
 • TP2: {max(win_percent - 10, 0)}%
 • TP3: {max(win_percent - 20, 0)}%
 • SL: {100 - win_percent}%
+
+📌 Ενισχυτικά Στοιχεία:
+• Volume Boost: {'✅' if volume_boost else '❌'}
+• POC + VWAP Alignment: {'✅' if alignment_boost else '❌'}
 
 ✅ Επιβεβαιώσεις:
 {confirmations_lines}
