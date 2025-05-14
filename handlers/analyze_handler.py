@@ -111,7 +111,7 @@ def calculate_win_percent(indicators, signal):
     except Exception as e:
         print(f"⚠️ Σφάλμα στο TP proximity check: {e}")
 
-    win_percent = round((win_score / total_possible + 3)) * 100, 1)
+    win_percent = round((win_score / (total_possible + 3)) * 100, 1)
     return win_percent, results
 # Αρχή της συνομιλίας - ζητά symbol
 async def analyze_start(update, context):
