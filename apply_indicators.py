@@ -166,7 +166,8 @@ def detect_candlestick_patterns(df):
         o, h, l, c = df.iloc[i][['open', 'high', 'low', 'close']]
         patterns.append(classify_candle(o, h, l, c, i))
 
-
+    df['candle_pattern'] = patterns
+    return df
 # apply_indicators: Εφαρμόζει όλους τους δείκτες βήμα-βήμα
 # και εκτυπώνει το μήκος του df σε κάθε στάδιο για έλεγχο.
 
