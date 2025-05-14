@@ -94,9 +94,24 @@ def calculate_win_percent(indicators, signal):
         else:
              print("ℹ️ Volume boost δεν εφαρμόστηκε.")
     except Exception as e:
-         print(f"⚠️ Σφάλμα στον υπολογισμό volume boost: {e}")  
+         print(f"⚠️ Σφάλμα στον υπολογισμό volume boost: {e}") 
 
-    win_percent = round((win_score / total_possible) * 100, 1)
+        # ➕ Boost για TP proximity σε Swing High/Low
+    try:
+        if signal == 'LONG':
+            if abs(indicators['tp1'] - indicators['swing_high']) < indicators['atr']:
+                print("✅ TP1 κοντά σε swing high (LONG) → boost")
+                win_score += 1
+        elif signal == 'SHORT':
+            if abs(indicators['tp1'] - indicators['swing_low']) < indicators['atr']:
+                print("✅ TP1 κοντά σε swing low (SHORT) → boost")
+                win_score += 1
+        else:
+            print("ℹ️ Δεν πληρούνται οι προϋποθέσεις proximity.")
+    except Exception as e:
+        print(f"⚠️ Σφάλμα στο TP proximity check: {e}")
+
+    win_percent = round((win_score / total_possible + 3)) * 100
     return win_percent, results
 # Αρχή της συνομιλίας - ζητά symbol
 async def analyze_start(update, context):
@@ -213,6 +228,10 @@ async def finalize_analysis(update, context):
             'candle_pattern': last['candle_pattern'],# ✅νεο 
             'volume': last['volume'], #✅ ΝΕΟ
             'avg_volume': df['volume'].rolling(20).mean().iloc[-1], #✅ ΝΕΟ
+            'tp1': tp1, #✅ ΝΕΟ
+            'atr': last['ATR'], #✅ ΝΕΟ
+            'swing_high': last['swing_high'], #✅ ΝΕΟ
+            'swing_low': last['swing_low'], #✅ ΝΕΟ
         }
         # Εκτίμηση LONG ή SHORT σήματος 
         signal = evaluate_indicators(indicators)
