@@ -208,7 +208,7 @@ async def finalize_analysis(update, context):
         df = apply_indicators(df)
         last = df.iloc[-1]
         # Λήψη τιμών δεικτών από τελευταία γραμμή
-        indicators = {
+               indicators = {
             'rsi': last['RSI'],
             'macd_cross': last['MACD_Cross'],
             'macd_histogram': last['MACD_Hist'],
@@ -226,17 +226,19 @@ async def finalize_analysis(update, context):
             'tsi': last['TSI'],  # ✅ Νέος δείκτης TSI
             'poc': last['POC'],  # ✅ Νέος δείκτης POC
             'candle_pattern': last['candle_pattern'],# ✅νεο 
-            'volume': last['volume'], #✅ ΝΕΟ
-            'avg_volume': df['volume'].rolling(20).mean().iloc[-1], #✅ ΝΕΟ
-            'tp1': tp1, #✅ ΝΕΟ
-            'atr': last['ATR'], #✅ ΝΕΟ
-            'swing_high': last['swing_high'], #✅ ΝΕΟ
-            'swing_low': last['swing_low'], #✅ ΝΕΟ
+            
         }
         # Εκτίμηση LONG ή SHORT σήματος 
         signal = evaluate_indicators(indicators)
         # Υπολογισμός Entry, SL, TP
         entry, sl, tp1, tp2, tp3 = calculate_trade_levels(df, signal)
+        # Εμπλουτισμος των indicators με tp1, atr, swing_high, swing_low volume
+        indicators.update({
+            'avg_volume': df['volume'].rolling(20).mean().iloc[-1], #✅ ΝΕΟ
+            'tp1': tp1, #✅ ΝΕΟ
+            'atr': last['ATR'], #✅ ΝΕΟ
+            'swing_high': last['swing_high'], #✅ ΝΕΟ
+            'swing_low': last['swing_low'], #✅ ΝΕΟ
          # Υπολογισμός πιθανότητας επιτυχίας και αριθμός επιβεβαιώσεων
         win_percent, confirmations = calculate_win_percent(indicators, signal)
         confirmation_count = sum(1 for v in confirmations.values() if v)
