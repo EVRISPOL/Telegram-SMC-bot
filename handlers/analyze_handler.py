@@ -239,6 +239,7 @@ async def finalize_analysis(update, context):
             'atr': last['ATR'], #✅ ΝΕΟ
             'swing_high': last['swing_high'], #✅ ΝΕΟ
             'swing_low': last['swing_low'], #✅ ΝΕΟ
+        }
          # Υπολογισμός πιθανότητας επιτυχίας και αριθμός επιβεβαιώσεων
         win_percent, confirmations = calculate_win_percent(indicators, signal)
         confirmation_count = sum(1 for v in confirmations.values() if v)
