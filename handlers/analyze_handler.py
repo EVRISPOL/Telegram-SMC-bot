@@ -273,7 +273,7 @@ def generate_detailed_report(ind, signal, win_percent, mtf_result=True):
         'MTF Trend': mtf_result,
         'TSI': ind['tsi'] > 0 if signal == 'LONG' else ind['tsi'] < 0,
         'POC': ind['price'] > ind['poc'] if signal == 'LONG' else ind['price'] < ind['poc'],
-        'candle': indicators['candle_pattern'] in ['hammer', 'bullish_engulfing'] if signal == 'LONG' else indicators['candle_pattern'] in ['inverted_hammer', 'bearish_engulfing'],
+        'candle': ind['candle_pattern'] in ['hammer', 'bullish_engulfing'] if signal == 'LONG' else ind['candle_pattern'] in ['inverted_hammer', 'bearish_engulfing'],
     }
 
     confirmations_lines = "\\n".join([f"• {k}: {'✅' if v else '❌'}" for k, v in confirmations.items()])
