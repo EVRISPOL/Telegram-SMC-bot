@@ -318,14 +318,14 @@ def generate_detailed_report(ind, signal, win_percent, mtf_result=True):
     except:
         pass
     # Νέα Επιβεβαίωση: POC + VWAP alignment
-   # Νέα Επιβεβαίωση: POC + VWAP alignment
-alignment_boost = False
-try:
-    if signal == 'LONG' and float(ind['price']) > float(ind['vwap']) and float(ind['price']) > float(ind['poc']):
-        alignment_boost = True
-    elif signal == 'SHORT' and float(ind['price']) < float(ind['vwap']) and float(ind['price']) < float(ind['poc']):
-        alignment_boost = True
-except Exception as e:
+    # Νέα Επιβεβαίωση: POC + VWAP alignment
+    alignment_boost = False
+    try:
+        if signal == 'LONG' and float(ind['price']) > float(ind['vwap']) and float(ind['price']) > float(ind['poc']):
+           alignment_boost = True
+        elif signal == 'SHORT' and float(ind['price']) < float(ind['vwap']) and float(ind['price']) < float(ind['poc']):
+           alignment_boost = True
+    except Exception as e:
     print(f"⚠️ Σφάλμα στον alignment boost (detailed report): {e}")
     
      # TP Proximity Boost
