@@ -1,4 +1,4 @@
-
+ # ΤΟ ΑΡΧΕΙΟ ΑΥΤΟ ΠΕΡΙΕΧΕΙ ΤΙΣ ΠΛΗΡΟΦΟΡΙΕΣ ΠΟΥ ΘΑ ΠΑΡΕΙ Ο ADMIN ΟΤΑΝ ΠΑΤΑΕΙ ΤΟ ΚΟΥΜΠΙ 'ΣΤΟΙΧΕΙΑ' ΣΤΗΝ ΑΝΑΛΥΣΗ.
 def generate_detailed_report(ind, signal, win_percent, mtf_result=True):
     confirmations = {
         'RSI': ind['rsi'] < 30 if signal == 'LONG' else ind['rsi'] > 70,
