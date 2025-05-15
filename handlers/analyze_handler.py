@@ -4,6 +4,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRe
 from telegram.ext import ConversationHandler, CallbackQueryHandler, CommandHandler, MessageHandler, filters
 
 from binance_utils import get_klines # Λήψη ιστορικών τιμών
+from symbol_checker import is_valid_symbol # ελεγχος εγκυροτητας στην πληκτρολογηση symbol!
 from mtf_checker import check_mtf_confirmation # Έλεγχος τάσης μεγαλύτερου timeframe (MTF)
 from evaluate_indicators import evaluate_indicators # Απόφαση LONG ή SHORT με βάση δείκτες
 from apply_indicators import apply_indicators # Υπολογισμός τεχνικών δεικτών
@@ -109,6 +110,14 @@ async def analyze_start(update, context):
 # Λήψη symbol από τον χρήστη
 async def receive_symbol(update, context):
     context.user_data["symbol"] = update.message.text.strip().upper()
+    if not is_valid_symbol(context.user_data["symbol"]):
+        await update.message.reply_text(
+            f"❌ Το symbol `{context.user_data['symbol']}` δεν είναι έγκυρο.\n"
+            f"👉 Βεβαιώσου ότι γράφεται π.χ. `BTCUSDT`, `ETHUSDT`, `SOLUSDT`.",
+            parse_mode="Markdown"
+        )
+        return SYMBOL
+
     await update.message.reply_text("⏱️ Πληκτρολόγησε το timeframe (π.χ. 15m, 1h):")
     return TIMEFRAME
 # Λήψη timeframe
