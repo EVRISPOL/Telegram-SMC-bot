@@ -306,45 +306,6 @@ async def show_details_callback(update, context):
     else:
         await query.message.reply_text("Δεν έχεις πρόσβαση.")
 
-    return f"""**[ Τεχνική Ανάλυση - Πλήρες Report ]**
-
-📊 Κατεύθυνση Τάσης
-RSI: {ind['rsi']} → {'Oversold ❗' if ind['rsi'] < 30 else 'Overbought ❗' if ind['rsi'] > 70 else ''}  
-MACD: {'Bullish' if ind['macd_cross']=='bullish' else 'Bearish'} {'✔️' if (ind['macd_histogram'] > 0 if signal=='LONG' else ind['macd_histogram'] < 0) else '❌'} (Histogram: {ind['macd_histogram']})  
-StochRSI: K={ind['stochrsi_k']} / D={ind['stochrsi_d']} → {'Oversold ❗' if ind['stochrsi_k'] < 20 else 'Overbought ❗' if ind['stochrsi_k'] > 80 else ''}  
-
-📈 Τάση & Κίνηση
-EMA Trend: {ind['ema_trend'].capitalize()}  
-VWAP: {ind['vwap']} → Price {'Above' if ind['price'] > ind['vwap'] else 'Below'} 
-ADX: {ind['adx']} → {'Very Strong Trend ‼️' if ind['adx'] > 25 else 'Weak'}  
-
-📉 Όγκοι / Ροή
-Volume: {ind['volume']} (Avg: {ind['avg_volume']:.2f}) → {'🔥 Υψηλός' if volume_boost else 'OK'}
-OBV: {ind['obv']} (Trend: {ind['obv_trend']})  
-
-🌐 Μεταβλητότητα
-ATR: {ind['atr']} (Avg: {ind['atr_sma']})  
-Bollinger: {ind['bollinger_breakout']} breakout\n
-TSI: {ind['tsi']} → {'Bullish' if ind['tsi'] > 0 else 'Bearish'}  
-POC: {ind['poc']} → Price {'Above' if ind['price'] > ind['poc'] else 'Below'}  
-  
-
-⚠️ Συμπέρασμα
-→ {signal} σήμα με βάση τα περισσότερα στοιχεία.  
-→ AI WIN Prediction:
-• TP1: {win_percent}%
-• TP2: {max(win_percent - 10, 0)}%
-• TP3: {max(win_percent - 20, 0)}%
-• SL: {100 - win_percent}%
-
-📌 Ενισχυτικά Στοιχεία:
-• Volume Boost: {'✅' if volume_boost else '❌'}
-• POC + VWAP Alignment: {'✅' if alignment_boost else '❌'}
-• TP1 κοντά σε Swing High/Low: {'✅' if tp_proximity_boost else '❌'}
-
-✅ Επιβεβαιώσεις:
-{confirmations_lines}
-"""
 # Τερματισμός conversation σε οποιοδήποτε σημείο
 def cancel(update, context):
     return ConversationHandler.END
