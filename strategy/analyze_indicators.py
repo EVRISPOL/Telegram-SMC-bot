@@ -1,5 +1,5 @@
 # Εισαγωγή συναρτήσεων που εφαρμόζουν τεχνικούς δείκτες στο DataFrame
-from apply_indicators import (
+from strategy.apply_indicators import (
     calculate_rsi,                     # Δείκτης RSI (Relative Strength Index)
     calculate_macd,                    # Δείκτης MACD (Moving Average Convergence Divergence)
     calculate_ema_ribbon,              # EMA Ribbon - σύστημα εκθετικών κινητών μέσων
@@ -11,7 +11,7 @@ from apply_indicators import (
     calculate_adx                      # ADX - Average Directional Index (ισχύς τάσης)
 )
 # Εφαρμόζει όλους τους τεχνικούς δείκτες στο DataFrame των τιμών
-def apply_indicators(df):                    # Υπολογισμός RSI
+def strategy.apply_indicators(df):                    # Υπολογισμός RSI
     df = calculate_rsi(df)                   # Υπολογισμός MACD και MACD Histogram
     df = calculate_macd(df)                  # Προσθήκη EMA τάσης
     df = calculate_ema_ribbon(df)            # Υπολογισμός VWAP
