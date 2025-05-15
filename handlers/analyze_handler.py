@@ -12,6 +12,7 @@ from strategy.trade_levels import calculate_trade_levels  # Υπολογισμό
 from chart_generator import generate_chart  # Δημιουργία γραφήματος με τα επίπεδα
 from analyze_module.detailed_report import generate_detailed_report #σχετιζεται με τις πληροφοριες αναλυσης του ADMIN ΣΤΟΝ ΦΑΚΕΛΟ ANALYZE MODULE
 from analyze_module.win_percent import calculate_win_percent # Να υπολογίσει πόσο πιθανό είναι ένα σήμα (LONG/SHORT) να πετύχει με βάση: τους τεχνικούς δείκτες (RSI, MACD, ADX, VWAP, OBV, TSI, POC κ.λπ.) και να δωσει ποσοστο % ΦΑΚΕΛΟ ANALYZE MODULE
+from analyze_module.analysis_core import finalize_analysis #Εκτελεί όλη τη λογική που χρειάζεται για να αναλύσει ένα crypto asset και να δώσει ένα ολοκληρωμένο trading signal. βρισκεται στον ΦΑΚΕΛΟ ANALYZE MODULE
 
 # Ορισμός των καταστάσεων του ConversationHandler
 SYMBOL, TIMEFRAME, LEVERAGE, RISK, CAPITAL, MTF = range(6)
