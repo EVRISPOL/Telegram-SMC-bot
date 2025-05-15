@@ -5,10 +5,10 @@ from telegram.ext import ConversationHandler, CallbackQueryHandler, CommandHandl
 
 from binance_utils import get_klines # Λήψη ιστορικών τιμών
 from symbol_checker import is_valid_symbol  # ελεγχος εγκυρης πληκτρολογησης signal απο symbol checker!
-from mtf_checker import check_mtf_confirmation # Έλεγχος τάσης μεγαλύτερου timeframe (MTF)
-from evaluate_indicators import evaluate_indicators # Απόφαση LONG ή SHORT με βάση δείκτες
-from apply_indicators import apply_indicators # Υπολογισμός τεχνικών δεικτών
-from trade_levels import calculate_trade_levels  # Υπολογισμός Entry, SL, TP
+from strategy.mtf_checker import check_mtf_confirmation # Έλεγχος τάσης μεγαλύτερου timeframe (MTF)
+from strategy.evaluate_indicators import evaluate_indicators # Απόφαση LONG ή SHORT με βάση δείκτες
+from strategy.apply_indicators import apply_indicators # Υπολογισμός τεχνικών δεικτών
+from strategy.trade_levels import calculate_trade_levels  # Υπολογισμός Entry, SL, TP
 from chart_generator import generate_chart  # Δημιουργία γραφήματος με τα επίπεδα
 
 # Ορισμός των καταστάσεων του ConversationHandler
