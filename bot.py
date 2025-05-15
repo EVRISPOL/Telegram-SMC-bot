@@ -2,6 +2,7 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 from telegram.ext import CallbackQueryHandler
 
+from symbol_checker import initialize_symbol_list            # ελεγχος εγκυρης πληκτρολογησης signal απο symbol checker!
 from handlers.analyze_handler import show_details_callback   # Callback για εμφάνιση αναλυτικού report
 from handlers.analyze_handler import get_analyze_handler     # Handler για τη ροή εντολής /analyze (symbol, timeframe, capital κ.λπ.)
 from handlers.autosignal_handler import autosignal           # Συνάρτηση που στέλνει αυτόματα signals (/autosignal)
@@ -11,6 +12,8 @@ from handlers.start_handler import start                     # Συνάρτησ�
 
  # 🚀 Κύρια συνάρτηση που ξεκινάει το bot
 def main():
+    initialize_symbol_list()  # ✅ Λήψη Binance symbols μία φορά κατά την εκκίνηση
+
      # Δημιουργία εφαρμογής με το BOT_TOKEN
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     # 💰 Εντολή /price – Επιστρέφει την τρέχουσα τιμή από Binance
