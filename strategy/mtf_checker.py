@@ -6,7 +6,7 @@
 # expected_direction: Η κατεύθυνση σήματος από μικρότερο timeframe ('long' ή 'short')
 
 from binance_utils import get_klines
-from apply_indicators import calculate_macd, calculate_ema_ribbon
+from .apply_indicators import calculate_macd, calculate_ema_ribbon
 
 def check_mtf_confirmation(symbol: str, mtf_timeframe: str, expected_direction: str) -> dict:
     try:
