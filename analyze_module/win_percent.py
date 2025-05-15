@@ -1,6 +1,3 @@
-# Βάρη ανά δείκτη για υπολογισμό WIN %
-# Συνάρτηση που υπολογίζει το ποσοστό επιτυχίας βάσει επιβεβαιώσεων
-
 def calculate_win_percent(indicators, signal, mtf_result=True):
     adx = indicators['adx']
 
