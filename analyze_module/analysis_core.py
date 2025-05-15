@@ -1,4 +1,4 @@
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove     #Εκτελεί όλη τη λογική που χρειάζεται για να αναλύσει ένα crypto asset και να δώσει ένα ολοκληρωμένο trading signal.
 from telegram.ext import ConversationHandler
 
 from binance_utils import get_klines
