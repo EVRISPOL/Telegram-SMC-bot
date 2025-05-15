@@ -4,6 +4,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRe
 from telegram.ext import ConversationHandler, CallbackQueryHandler, CommandHandler, MessageHandler, filters
 
 from binance_utils import get_klines # Λήψη ιστορικών τιμών
+from symbol_checker import is_valid_symbol  # ελεγχος εγκυρης πληκτρολογησης signal απο symbol checker!
 from mtf_checker import check_mtf_confirmation # Έλεγχος τάσης μεγαλύτερου timeframe (MTF)
 from evaluate_indicators import evaluate_indicators # Απόφαση LONG ή SHORT με βάση δείκτες
 from apply_indicators import apply_indicators # Υπολογισμός τεχνικών δεικτών
