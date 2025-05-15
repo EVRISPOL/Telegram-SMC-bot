@@ -10,6 +10,7 @@ from strategy.evaluate_indicators import evaluate_indicators # Απόφαση LO
 from strategy.apply_indicators import apply_indicators # Υπολογισμός τεχνικών δεικτών
 from strategy.trade_levels import calculate_trade_levels  # Υπολογισμός Entry, SL, TP
 from chart_generator import generate_chart  # Δημιουργία γραφήματος με τα επίπεδα
+from analyze_module.detailed_report import generate_detailed_report #σχετιζεται με τις πληροφοριες αναλυσης του ADMIN ΣΤΟΝ ΦΑΚΕΛΟ ANALYZE MODULE
 
 # Ορισμός των καταστάσεων του ConversationHandler
 SYMBOL, TIMEFRAME, LEVERAGE, RISK, CAPITAL, MTF = range(6)
