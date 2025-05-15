@@ -112,6 +112,18 @@ async def receive_mtf(update, context):
     await update.message.reply_text("✅ Καταχωρήθηκε το MTF timeframe.")
     return await finalize_analysis(update, context)
 
+# Callback για εμφάνιση πλήρους ανάλυσης (μόνο admin)
+async def show_details_callback(update, context):
+    query = update.callback_query
+    await query.answer()
+    user_id = query.from_user.id
+
+    if user_id in ADMIN_USER_IDS:
+        full_report = context.user_data.get("full_analysis", "Δεν υπάρχουν δεδομένα.")
+        await query.message.reply_text(full_report, parse_mode="Markdown")
+    else:
+        await query.message.reply_text("❌ Δεν έχεις πρόσβαση.")
+
 # Επιστρέφει τον handler για την εντολή /analyze
 def get_analyze_handler():
     return ConversationHandler(
