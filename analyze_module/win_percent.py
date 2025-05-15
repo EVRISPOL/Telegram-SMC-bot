@@ -1,4 +1,4 @@
-def calculate_win_percent(indicators, signal, mtf_result=True):
+def calculate_win_percent(indicators, signal, mtf_result=True):                 # Βάρη ανά δείκτη για υπολογισμό WIN %   # Συνάρτηση που υπολογίζει το ποσοστό επιτυχίας βάσει επιβεβαιώσεων
     adx = indicators['adx']
 
     if adx < 20:
