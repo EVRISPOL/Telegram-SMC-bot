@@ -1,5 +1,4 @@
-### ΣΕ ΑΥΤΟ ΤΟ ΑΡΧΕΙΟ ΒΡΙΣΚΟΝΤΑΙ ΤΑ ΚΟΥΜΠΙΑ COPY ΣΤΗΝ /ANALYZE ΠΟΥ ΕΜΦΑΝΙΖΟΝΤΑΙ ΔΙΠΛΑ ΑΠΟ ENTRY/SL/TP1/TP2 ΚΛΠ
-from telegram import Update
+from telegram import Update   ### ΣΕ ΑΥΤΟ ΤΟ ΑΡΧΕΙΟ ΒΡΙΣΚΟΝΤΑΙ ΤΑ ΚΟΥΜΠΙΑ COPY ΣΤΗΝ /ANALYZE ΠΟΥ ΕΜΦΑΝΙΖΟΝΤΑΙ ΔΙΠΛΑ ΑΠΟ ENTRY/SL/TP1/TP2 ΚΛΠ
 from telegram.ext import CallbackContext
 
 async def handle_copy_button(update: Update, context: CallbackContext):
