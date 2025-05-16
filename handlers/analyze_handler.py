@@ -297,10 +297,10 @@ async def finalize_analysis(update, context):
             f"📊 MTF Trend: {'✅ Συμφωνία' if mtf_result else '❌ Διαφωνία'}\n\n"
 
             f"🤖 AI WIN Prediction:\n"
-            f"• TP1: {tp1_prob}%\n"
-            f"• TP2: {tp2_prob}%\n"
-            f"• TP3: {tp3_prob}%\n"
-            f"• SL: {sl_prob}%\n"
+            f"{tp_emoji(tp1_prob)} TP1: {tp1_prob}%\n"
+            f"{tp_emoji(tp2_prob)} TP2: {tp2_prob}%\n"
+            f"{tp_emoji(tp3_prob)} TP3: {tp3_prob}%\n"
+            f"{tp_emoji(sl_prob)} SL: {sl_prob}%\n"
         )
          # Inline κουμπί για προβολή στοιχείων
         keyboard = [[InlineKeyboardButton("ℹ️ Στοιχεία", callback_data="show_details")],
