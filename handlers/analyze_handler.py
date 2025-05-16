@@ -264,22 +264,21 @@ async def finalize_analysis(update, context):
         # Επιλογή emoji ανά TP % (για win_percent)
         def tp_emoji(prob):
             if prob >= 50:
-        return "🟢"
+                return "🟢"
             elif prob >= 30:
-        return "🟡"
+                return "🟡"
              else:
-        return "🔴"        
-
+                 return "🔴"      
+        # Υπολογισμός πιθανοτήτων για τα TP και SL
+        tp1_prob = round(win_percent, 1)
+        tp2_prob = round(max(win_percent - 10, 0), 1)
+        tp3_prob = round(max(win_percent - 20, 0), 1)
+        sl_prob  = round(100 - win_percent, 1)
         # Υπολογισμός κερδών ανά TP
         profit_tp1 = calculate_profit(entry, tp1, position_size)
         profit_tp2 = calculate_profit(entry, tp2, position_size)
         profit_tp3 = calculate_profit(entry, tp3, position_size)
 
-        tp1_prob = round(win_percent, 1)
-        tp2_prob = round(max(win_percent - 10, 0), 1)
-        tp3_prob = round(max(win_percent - 20, 0), 1)
-        sl_prob  = round(100 - win_percent, 1)
-        
         # Δημιουργία απάντησης με τα επίπεδα και προβλέψεις
         response = (
             f"────────────────────────────\n\n"
@@ -294,11 +293,11 @@ async def finalize_analysis(update, context):
             f"💸 Μέγιστη ζημία (SL): -{risk_amount}€\n"
             f"✅ Confirmations: {confirmation_count} / {total_confirmations}\\n"
             f"📊 MTF Trend: {'✅ Συμφωνία' if mtf_result else '❌ Διαφωνία'}\n\n"
-            f"🎯 AI WIN Prediction:\n\n"
-            f"• TP1: {round(win_percent, 1)}%\\n"
-            f"• TP2: {round(max(win_percent - 10, 0), 1)}%\\n"
-            f"• TP3: {round(max(win_percent - 20, 0), 1)}%\\n"
-            f"• SL: {round(100 - win_percent, 1)}%"
+            f"🤖 AI WIN Prediction:\n"
+            f"• TP1: {tp1_prob}%\n"
+            f"• TP2: {tp2_prob}%\n"
+            f"• TP3: {tp3_prob}%\n"
+            f"• SL: {sl_prob}%\n"
         )
          # Inline κουμπί για προβολή στοιχείων
         keyboard = [[InlineKeyboardButton("ℹ️ Στοιχεία", callback_data="show_details")],
