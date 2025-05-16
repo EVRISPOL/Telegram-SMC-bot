@@ -298,9 +298,8 @@ async def finalize_analysis(update, context):
             f"🔸 TP2: {tp2_prob}%\n"
             f"🔸 TP3: {tp3_prob}%\n"
             f"🔸SL: {sl_prob}%\n"
-        )        
-        # Δημιουργία των κουμπιών
-        reply_markup = generate_copy_keyboard(entry, sl, tp1, tp2, tp3, profit_tp1, profit_tp2, profit_tp3, symbol)
+        )      
+        
         # Δημιουργία chart
         chart = generate_chart(df, symbol, signal, entry, sl, tp1, tp2, tp3)
         # Αποθήκευση πλήρους ανάλυσης για admin
@@ -309,6 +308,12 @@ async def finalize_analysis(update, context):
         )
         # 🔹 Στέλνουμε πρώτα την εικόνα με caption (χωρίς κουμπιά)
         await update.message.reply_photo(photo=chart, caption=response)
+        # 🔹 Κουμπιά μόνο για Στοιχεία, TradingView, Bybit
+        reply_markup = InlineKeyboardMarkup([
+            [InlineKeyboardButton("📊 Στοιχεία", callback_data="show_details")],
+            [InlineKeyboardButton("📈 Δες στο TradingView", url=f"https://www.tradingview.com/chart/?symbol=BINANCE:{symbol}")],
+            [InlineKeyboardButton("📤 Εκτέλεση στο Bybit", url=f"https://www.bybit.com/en-US/trade/usdt/{symbol.replace('USDT', '').lower()}")]
+        ])
         # 🔹 Στέλνουμε μετά τα κουμπιά σε ξεχωριστό μήνυμα
         await update.message.reply_text("📋 Επιλογές:", reply_markup=reply_markup)
         # Ολοκλήρωση
