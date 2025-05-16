@@ -12,7 +12,7 @@ def get_valid_binance_symbols():
     data = response.json()
     symbols = [
         s["symbol"] for s in data["symbols"]
-        if s["status"] == "TRADING" and s["quoteAsset"] == "USDT"
+        if s["status"] == "TRADING" and s["quoteAsset"] == "USDT" #
     ]
     return set(symbols)
 
