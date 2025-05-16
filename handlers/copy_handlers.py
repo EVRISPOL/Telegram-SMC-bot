@@ -1,4 +1,4 @@
-
+### ΣΕ ΑΥΤΟ ΤΟ ΑΡΧΕΙΟ ΒΡΙΣΚΟΝΤΑΙ ΤΑ ΚΟΥΜΠΙΑ COPY ΠΟΥ ΕΜΦΑΝΙΖΟΝΤΑΙ ΔΙΠΛΑ ΑΠΟ ENTRY/SL/TP1/TP2 ΚΛΠ
 from telegram import Update
 from telegram.ext import CallbackContext
 
