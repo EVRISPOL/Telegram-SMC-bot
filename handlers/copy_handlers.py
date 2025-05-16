@@ -1,5 +1,6 @@
 from telegram import Update   ### ΣΕ ΑΥΤΟ ΤΟ ΑΡΧΕΙΟ ΒΡΙΣΚΟΝΤΑΙ ΤΑ ΚΟΥΜΠΙΑ COPY ΣΤΗΝ /ANALYZE ΠΟΥ ΕΜΦΑΝΙΖΟΝΤΑΙ ΔΙΠΛΑ ΑΠΟ ENTRY/SL/TP1/TP2 ΚΛΠ
 from telegram.ext import CallbackContext
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup  ← σωστό, αλλά ήδη υπάρχει πάνω
 
 async def handle_copy_button(update: Update, context: CallbackContext):
     query = update.callback_query
@@ -12,3 +13,31 @@ async def handle_copy_button(update: Update, context: CallbackContext):
         label = parts[1].upper()
         value = parts[2]
         await query.message.reply_text(f"✅ Αντιγράφηκε: {label} = {value}")
+
+def generate_copy_keyboard(entry, sl, tp1, tp2, tp3, profit_tp1, profit_tp2, profit_tp3, symbol):
+    keyboard = [
+        [
+            InlineKeyboardButton(f"📥 Entry: {entry}", callback_data="none"),
+            InlineKeyboardButton("📋", callback_data=f"copy_entry_{entry}")
+        ],
+        [
+            InlineKeyboardButton(f"❌ Stop Loss: {sl}", callback_data="none"),
+            InlineKeyboardButton("📋", callback_data=f"copy_sl_{sl}")
+        ],
+        [
+            InlineKeyboardButton(f"🟢 TP1: {tp1} (+{profit_tp1}€)", callback_data="none"),
+            InlineKeyboardButton("📋", callback_data=f"copy_tp1_{tp1}")
+        ],
+        [
+            InlineKeyboardButton(f"🟡 TP2: {tp2} (+{profit_tp2}€)", callback_data="none"),
+            InlineKeyboardButton("📋", callback_data=f"copy_tp2_{tp2}")
+        ],
+        [
+            InlineKeyboardButton(f"🔴 TP3: {tp3} (+{profit_tp3}€)", callback_data="none"),
+            InlineKeyboardButton("📋", callback_data=f"copy_tp3_{tp3}")
+        ],
+        [
+            InlineKeyboardButton("📤 Εκτέλεση στο Bybit", url=f"https://www.bybit.com/en-US/trade/usdt/{symbol}")
+        ]
+    ]
+    return InlineKeyboardMarkup(keyboard)
