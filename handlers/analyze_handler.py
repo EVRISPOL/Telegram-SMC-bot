@@ -361,26 +361,26 @@ def generate_detailed_report(ind, signal, win_percent, mtf_result=True):
 
     return f"""**[ Τεχνική Ανάλυση - Πλήρες Report ]**
 
-📊 Κατεύθυνση Τάσης
-RSI: {ind['rsi']} → {'Oversold ❗' if ind['rsi'] < 30 else 'Overbought ❗' if ind['rsi'] > 70 else ''}  
-MACD: {'Bullish' if ind['macd_cross']=='bullish' else 'Bearish'} {'✔️' if (ind['macd_histogram'] > 0 if signal=='LONG' else ind['macd_histogram'] < 0) else '❌'} (Histogram: {ind['macd_histogram']})  
-StochRSI: K={ind['stochrsi_k']} / D={ind['stochrsi_d']} → {'Oversold ❗' if ind['stochrsi_k'] < 20 else 'Overbought ❗' if ind['stochrsi_k'] > 80 else ''}  
+📊 *Κατεύθυνση Τάσης*
+• RSI: {fmt(ind['rsi'])} → {'Oversold ❗' if ind['rsi'] < 30 else 'Overbought ❗' if ind['rsi'] > 70 else ''}
+• MACD: {'Bullish' if ind['macd_cross']=='bullish' else 'Bearish'} {'✔️' if (ind['macd_histogram'] > 0 if signal=='LONG' else ind['macd_histogram'] < 0) else '❌'} (Hist: {fmt(ind['macd_histogram'])})
+• StochRSI: K={fmt(ind['stochrsi_k'])} / D={fmt(ind['stochrsi_d'])}
 
-📈 Τάση & Κίνηση
-EMA Trend: {ind['ema_trend'].capitalize()}  
-VWAP: {ind['vwap']} → Price {'Above' if ind['price'] > ind['vwap'] else 'Below'} 
-ADX: {ind['adx']} → {'Very Strong Trend ‼️' if ind['adx'] > 25 else 'Weak'}  
+📈 *Τάση & Κίνηση*
+• EMA Trend: {ind['ema_trend'].capitalize()}
+• VWAP: {fmt(ind['vwap'])} → Price {'Above' if ind['price'] > ind['vwap'] else 'Below'}
+• ADX: {fmt(ind['adx'])} → {'Very Strong Trend ‼️' if ind['adx'] > 30 else 'Strong Trend 💪' if ind['adx'] > 25 else 'Weak'}
 
-📉 Όγκοι / Ροή
-Volume: {ind['volume']} (Avg: {ind['avg_volume']:.2f}) → {'🔥 Υψηλός' if volume_boost else 'OK'}
-OBV: {ind['obv']} (Trend: {ind['obv_trend']})  
+📉 *Όγκοι / Ροή*
+• Volume: {fmt(ind['volume'])} (Avg: {fmt(ind['avg_volume'])}) {'🔥' if volume_boost else ''}
+• OBV: {fmt(ind['obv'])} (Trend: {ind['obv_trend']})
 
-🌐 Μεταβλητότητα
-ATR: {ind['atr']} (Avg: {ind['atr_sma']})  
-Bollinger: {ind['bollinger_breakout']} breakout\n
-TSI: {ind['tsi']} → {'Bullish' if ind['tsi'] > 0 else 'Bearish'}  
-POC: {ind['poc']} → Price {'Above' if ind['price'] > ind['poc'] else 'Below'}  
-  
+🌐 *Μεταβλητότητα*
+• ATR: {fmt(ind['atr'])} (Avg: {fmt(ind['atr_sma'])})
+• Bollinger: {ind['bollinger_breakout']} breakout
+• TSI: {fmt(ind['tsi'])} → {'Bullish' if ind['tsi'] > 0 else 'Bearish'}
+• POC: {fmt(ind['poc'])} → Price {'Above' if ind['price'] > ind['poc'] else 'Below'}
+
 
 ⚠️ Συμπέρασμα
 → {signal} σήμα με βάση τα περισσότερα στοιχεία.  
