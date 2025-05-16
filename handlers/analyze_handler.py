@@ -309,6 +309,12 @@ async def show_details_callback(update, context):
         await query.message.reply_text("Δεν έχεις πρόσβαση.")
 # Δημιουργία πλήρους αναφοράς (για admin view)
 def generate_detailed_report(ind, signal, win_percent, mtf_result=True):
+    def fmt(val, digits=2):
+        try:
+            return round(float(val), digits)
+        except:
+            return val
+
     confirmations = {
         'RSI': ind['rsi'] < 30 if signal == 'LONG' else ind['rsi'] > 70,
         'MACD': ind['macd_cross'] == ('bullish' if signal == 'LONG' else 'bearish'),
