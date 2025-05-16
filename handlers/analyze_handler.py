@@ -299,7 +299,7 @@ async def finalize_analysis(update, context):
             f"🔸SL: {sl_prob}%\n"
         )
          # Inline κουμπί για προβολή στοιχείων
-        keyboard = [[InlineKeyboardButton("ℹ️ Στοιχεία", callback_data="show_details")]]
+        keyboard = [[InlineKeyboardButton("ℹ️ Στοιχεία", callback_data="show_details")],
                     [InlineKeyboardButton("📈 Δες στο TradingView", url=f"https://www.tradingview.com/chart/?symbol=BINANCE:{symbol}")]
         reply_markup = InlineKeyboardMarkup(keyboard)
          # Δημιουργία chart και αποστολή μηνύματος με caption + image
