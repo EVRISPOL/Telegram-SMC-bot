@@ -306,17 +306,14 @@ async def finalize_analysis(update, context):
         context.user_data['full_analysis'] = generate_detailed_report(
             indicators, signal, win_percent, mtf_result if mtf_result is not None else True
         )
-        # 🔹 Στέλνουμε πρώτα την εικόνα με caption (χωρίς κουμπιά)
-        await update.message.reply_photo(photo=chart, caption=response)
-        # 🔹 Κουμπιά μόνο για Στοιχεία, TradingView, Bybit
         reply_markup = InlineKeyboardMarkup([
             [InlineKeyboardButton("📊 Στοιχεία", callback_data="show_details")],
             [InlineKeyboardButton("📈 Δες στο TradingView", url=f"https://www.tradingview.com/chart/?symbol=BINANCE:{symbol}")],
             [InlineKeyboardButton("📤 Εκτέλεση στο Bybit", url=f"https://www.bybit.com/en-US/trade/usdt/{symbol.replace('USDT', '').lower()}")]
-        ])
+        ])        
+        # 🔹 Στέλνουμε πρώτα την εικόνα με caption (χωρίς κουμπιά)
+        await update.message.reply_photo(photo=chart, caption=response)
         # 🔹 Στέλνουμε μετά τα κουμπιά σε ξεχωριστό μήνυμα
-        await update.message.reply_text("📋 Επιλογές:", reply_markup=reply_markup)
-        # Ολοκλήρωση
         return ConversationHandler.END       
 
     except Exception as e:
