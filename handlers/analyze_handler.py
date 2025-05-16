@@ -267,7 +267,7 @@ async def finalize_analysis(update, context):
                 return "🟢"
             elif prob >= 30:
                 return "🟡"
-             else:
+            else:
                  return "🔴"      
         # Υπολογισμός πιθανοτήτων για τα TP και SL
         tp1_prob = round(win_percent, 1)
