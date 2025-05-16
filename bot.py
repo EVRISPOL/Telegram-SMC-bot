@@ -9,7 +9,7 @@ from handlers.autosignal_handler import autosignal           # Συνάρτησ�
 from handlers.price_handler import price                     # Συνάρτηση που απαντά με την τρέχουσα τιμή (/price)
 from config import BOT_TOKEN                                 # Το token του bot από αρχείο config
 from handlers.start_handler import start                     # Συνάρτηση για το /start μήνυμα
-from handlers.copy_handlers import handle_copy_button                 # Σε αυτο το αρχειο βρισκονται τα κουμπια copy που εμφανιζονται διπλα απο το entry/sl/tp1 κλπ!
+
 
  # 🚀 Κύρια συνάρτηση που ξεκινάει το bot
 def main():
@@ -27,8 +27,6 @@ def main():
     app.add_handler(CallbackQueryHandler(show_details_callback, pattern="show_details"))
     # 👋 Εντολή /start – Καλωσόρισμα του χρήστη
     app.add_handler(CommandHandler("start", start))
-    # Σε αυτο το αρχειο βρισκονται τα κουμπια copy που εμφανιζονται διπλα απο το entry/sl/tp1 κλπ!
-    app.add_handler(CallbackQueryHandler(handle_copy_button, pattern=r'^copy_'))
     # ✅ Μήνυμα επιβεβαίωσης ότι το bot τρέχει
     print("✅ Bot is running...")
     app.run_polling()
