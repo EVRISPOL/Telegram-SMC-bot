@@ -298,10 +298,9 @@ async def finalize_analysis(update, context):
             f"🔸 TP3: {tp3_prob}%\n"
             f"🔸SL: {sl_prob}%\n"
         )
-         # Inline κουμπί για προβολή στοιχείων
-        keyboard = [[InlineKeyboardButton("ℹ️", callback_data="show_details")],
-                    [InlineKeyboardButton("📈 Δες στο TradingView", url=f"https://www.tradingview.com/chart/?symbol=BINANCE:{symbol}")]]
-        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        reply_markup = generate_copy_keyboard(entry, sl, tp1, tp2, tp3, profit_tp1, profit_tp2, profit_tp3, symbol)
+
          # Δημιουργία chart και αποστολή μηνύματος με caption + image
         chart = generate_chart(df, symbol, signal, entry, sl, tp1, tp2, tp3)
         context.user_data['full_analysis'] = generate_detailed_report(indicators, signal, win_percent, mtf_result if mtf_result is not None else True)
