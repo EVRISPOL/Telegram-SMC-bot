@@ -1,6 +1,5 @@
-from telegram import Update   ### ΣΕ ΑΥΤΟ ΤΟ ΑΡΧΕΙΟ ΒΡΙΣΚΟΝΤΑΙ ΤΑ ΚΟΥΜΠΙΑ COPY ΣΤΗΝ /ANALYZE ΠΟΥ ΕΜΦΑΝΙΖΟΝΤΑΙ ΔΙΠΛΑ ΑΠΟ ENTRY/SL/TP1/TP2 ΚΛΠ
-from telegram.ext import CallbackContext
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup  ← σωστό, αλλά ήδη υπάρχει πάνω
+ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup ### ΣΕ ΑΥΤΟ ΤΟ ΑΡΧΕΙΟ ΒΡΙΣΚΟΝΤΑΙ ΤΑ ΚΟΥΜΠΙΑ COPY ΣΤΗΝ /ANALYZE ΠΟΥ ΕΜΦΑΝΙΖΟΝΤΑΙ ΔΙΠΛΑ ΑΠΟ ENTRY/SL/TP1/TP2 ΚΛΠ
+ from telegram.ext import CallbackContext
 
 async def handle_copy_button(update: Update, context: CallbackContext):
     query = update.callback_query
