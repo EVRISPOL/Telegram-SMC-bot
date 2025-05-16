@@ -3,7 +3,7 @@ import requests
 import pandas as pd
 
 def get_klines(symbol: str, interval: str = "15m", limit: int = 100) -> pd.DataFrame:
-    url = "https://api.binance.com/api/v3/klines"
+    url = "https://fapi.binance.com/fapi/v1/klines"
     params = {
         "symbol": symbol.upper(),
         "interval": interval,
