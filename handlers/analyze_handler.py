@@ -285,7 +285,7 @@ async def finalize_analysis(update, context):
             f"{signal_icon} Signal: {signal}\n"
             f"────────────────────────────\n\n"
 
-            f"🛑 SL: {sl}\n\n"
+            f"⛔ SL: {sl}\n\n"
             f"📥 Entry: {entry}\n\n"
             f"🎯 Take Profits:\n\n"
             f"{tp_emoji(tp1_prob)} TP1: {tp1} (+{profit_tp1}€)\n"
