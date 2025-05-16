@@ -281,8 +281,11 @@ async def finalize_analysis(update, context):
             f"• SL: {round(100 - win_percent, 1)}%"
         )
          # Inline κουμπί για προβολή στοιχείων
-        keyboard = [[InlineKeyboardButton("ℹ️ Στοιχεία", callback_data="show_details")]]
-        reply_markup = InlineKeyboardMarkup(keyboard)
+        keyboard = [[InlineKeyboardButton("ℹ️ Στοιχεία", callback_data="show_details")],
+                    [InlineKeyboardButton("📈 Δες στο TradingView", url=f"https://www.tradingview.com/chart/?symbol=BINANCE:{symbol}")],
+                    [InlineKeyboardButton("📤 Εκτέλεση στο Bybit", url=f"https://www.bybit.com/en-US/trade/usdt/{symbol.replace('USDT', '').lower()}")]
+         ]
+         reply_markup = InlineKeyboardMarkup(keyboard)
          # Δημιουργία chart και αποστολή μηνύματος με caption + image
         chart = generate_chart(df, symbol, signal, entry, sl, tp1, tp2, tp3)
         context.user_data['full_analysis'] = generate_detailed_report(indicators, signal, win_percent, mtf_result if mtf_result is not None else True)
