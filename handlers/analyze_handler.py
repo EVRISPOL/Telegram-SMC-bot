@@ -284,15 +284,18 @@ async def finalize_analysis(update, context):
             f"────────────────────────────\n\n"
             f"{signal_icon} Signal: {signal}\n"
             f"────────────────────────────\n\n"
+
             f"🛑 SL: {sl}\n\n"
-            f"🎯 Entry: {entry}\n\n"
-            f"🎯 Take Profits:\n"
+            f"📥 Entry: {entry}\n\n"
+            f"🎯 Take Profits:\n\n"
             f"{tp_emoji(tp1_prob)} TP1: {tp1} (+{profit_tp1}€)\n"
             f"{tp_emoji(tp2_prob)} TP2: {tp2} (+{profit_tp2}€)\n"
             f"{tp_emoji(tp3_prob)} TP3: {tp3} (+{profit_tp3}€)\n\n"
-            f"💸 Μέγιστη ζημία (SL): -{risk_amount}€\n"
+
+            f"⚠️ Μέγιστη ζημία (SL): -{risk_amount}€\n"
             f"✅ Confirmations: {confirmation_count} / {total_confirmations}\\n"
             f"📊 MTF Trend: {'✅ Συμφωνία' if mtf_result else '❌ Διαφωνία'}\n\n"
+
             f"🤖 AI WIN Prediction:\n"
             f"• TP1: {tp1_prob}%\n"
             f"• TP2: {tp2_prob}%\n"
