@@ -203,6 +203,7 @@ async def finalize_analysis(update, context):
         timeframe = user_data["timeframe"]
         # Φόρτωση ιστορικών τιμών και εφαρμογή δεικτών
         df = get_klines(symbol, interval=timeframe)
+        print("[INFO] Χρήση Binance Futures API (fapi) για κεριά")
         print(f"[DEBUG] Candles for {symbol} ({timeframe}):\n{df.tail(3)}")
         df = apply_indicators(df)
         last = df.iloc[-1]        
