@@ -298,16 +298,21 @@ async def finalize_analysis(update, context):
             f"🔸 TP2: {tp2_prob}%\n"
             f"🔸 TP3: {tp3_prob}%\n"
             f"🔸SL: {sl_prob}%\n"
-        )
-        
+        )        
+        # Δημιουργία των κουμπιών
         reply_markup = generate_copy_keyboard(entry, sl, tp1, tp2, tp3, profit_tp1, profit_tp2, profit_tp3, symbol)
-
-         # Δημιουργία chart και αποστολή μηνύματος με caption + image
+        # Δημιουργία chart
         chart = generate_chart(df, symbol, signal, entry, sl, tp1, tp2, tp3)
-        context.user_data['full_analysis'] = generate_detailed_report(indicators, signal, win_percent, mtf_result if mtf_result is not None else True)
-
-        await update.message.reply_photo(photo=chart, caption=response, reply_markup=reply_markup)
-        return ConversationHandler.END
+        # Αποθήκευση πλήρους ανάλυσης για admin
+        context.user_data['full_analysis'] = generate_detailed_report(
+            indicators, signal, win_percent, mtf_result if mtf_result is not None else True
+        )
+        # 🔹 Στέλνουμε πρώτα την εικόνα με caption (χωρίς κουμπιά)
+        await update.message.reply_photo(photo=chart, caption=response)
+        # 🔹 Στέλνουμε μετά τα κουμπιά σε ξεχωριστό μήνυμα
+        await update.message.reply_text("📋 Επιλογές:", reply_markup=reply_markup)
+        # Ολοκλήρωση
+        return ConversationHandler.END       
 
     except Exception as e:
         await update.message.reply_text(f"❌ Σφάλμα κατά την ανάλυση: {str(e)}", reply_markup=ReplyKeyboardRemove())
