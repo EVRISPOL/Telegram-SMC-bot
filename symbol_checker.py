@@ -6,7 +6,7 @@ valid_symbols = set()
 
 def get_valid_binance_symbols():
     """Λήψη όλων των USDT συμβόλων από Binance"""
-    url = "https://api.binance.com/api/v3/exchangeInfo"
+    url = "https://fapi.binance.com/fapi/v1/exchangeInfo"
     response = requests.get(url)
     response.raise_for_status()
     data = response.json()
