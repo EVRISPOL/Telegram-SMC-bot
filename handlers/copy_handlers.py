@@ -36,7 +36,12 @@ def generate_copy_keyboard(entry, sl, tp1, tp2, tp3, profit_tp1, profit_tp2, pro
             InlineKeyboardButton("📋", callback_data=f"copy_tp3_{tp3}")
         ],
         [
+            InlineKeyboardButton("📊 Στοιχεία", callback_data="show_details")
+        ],
+        [
+            InlineKeyboardButton("📈 Δες στο TradingView", url=f"https://www.tradingview.com/chart/?symbol=BINANCE:{symbol}")
+        ],
+        [
             InlineKeyboardButton("📤 Εκτέλεση στο Bybit", url=f"https://www.bybit.com/en-US/trade/usdt/{symbol}")
         ]
     ]
-    return InlineKeyboardMarkup(keyboard)
