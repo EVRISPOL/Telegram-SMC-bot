@@ -299,18 +299,15 @@ async def finalize_analysis(update, context):
             f"🔸 TP3: {tp3_prob}%\n"
             f"🔸SL: {sl_prob}%\n"
         )      
-        
+        # Inline κουμπί για προβολή στοιχείων
+        keyboard = [[InlineKeyboardButton("ℹ️ Στοιχεία", callback_data="show_details")]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
         # Δημιουργία chart
         chart = generate_chart(df, symbol, signal, entry, sl, tp1, tp2, tp3)
         # Αποθήκευση πλήρους ανάλυσης για admin
         context.user_data['full_analysis'] = generate_detailed_report(
             indicators, signal, win_percent, mtf_result if mtf_result is not None else True
-        )
-        reply_markup = InlineKeyboardMarkup([
-            [InlineKeyboardButton("📊 Στοιχεία", callback_data="show_details")],
-            [InlineKeyboardButton("📈 Δες στο TradingView", url=f"https://www.tradingview.com/chart/?symbol=BINANCE:{symbol}")],
-            [InlineKeyboardButton("📤 Εκτέλεση στο Bybit", url=f"https://www.bybit.com/en-US/trade/usdt/{symbol.replace('USDT', '').lower()}")]
-        ])        
+        )     
         # 🔹 Στέλνουμε πρώτα την εικόνα με caption (χωρίς κουμπιά)
         await update.message.reply_photo(photo=chart, caption=response)
         # 🔹 Στέλνουμε μετά τα κουμπιά σε ξεχωριστό μήνυμα
