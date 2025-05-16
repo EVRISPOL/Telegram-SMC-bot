@@ -10,7 +10,7 @@ from strategy.evaluate_indicators import evaluate_indicators # Απόφαση LO
 from strategy.apply_indicators import apply_indicators # Υπολογισμός τεχνικών δεικτών
 from strategy.trade_levels import calculate_trade_levels  # Υπολογισμός Entry, SL, TP
 from chart_generator import generate_chart  # Δημιουργία γραφήματος με τα επίπεδα
-from handlers.copy_handlers import generate_copy_keyboard # Σε αυτο το αρχειο βρισκονται ολα τα inline κουμπια οπως (copy,bybit,tradingview)
+
 
 # Ορισμός των καταστάσεων του ConversationHandler
 SYMBOL, TIMEFRAME, LEVERAGE, RISK, CAPITAL, MTF = range(6)
