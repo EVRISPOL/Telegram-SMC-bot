@@ -257,20 +257,40 @@ async def finalize_analysis(update, context):
         # Συνάρτηση υπολογισμού κέρδους για κάθε TP
         def calculate_profit(entry, target, size):
             return round((size * (target - entry) / entry), 2)
+        
+        # Επιλογή emoji βάσει τύπου σήματος
+        signal_icon = "🟩" if signal.upper() == "LONG" else "🟥"
+
+        # Επιλογή emoji ανά TP % (για win_percent)
+        def tp_emoji(prob):
+            if prob >= 50:
+        return "🟢"
+            elif prob >= 30:
+        return "🟡"
+             else:
+        return "🔴"        
 
         # Υπολογισμός κερδών ανά TP
         profit_tp1 = calculate_profit(entry, tp1, position_size)
         profit_tp2 = calculate_profit(entry, tp2, position_size)
         profit_tp3 = calculate_profit(entry, tp3, position_size)
+
+        tp1_prob = round(win_percent, 1)
+        tp2_prob = round(max(win_percent - 10, 0), 1)
+        tp3_prob = round(max(win_percent - 20, 0), 1)
+        sl_prob  = round(100 - win_percent, 1)
         
         # Δημιουργία απάντησης με τα επίπεδα και προβλέψεις
         response = (
-            f"📢 Signal: {signal}\\n"
-            f"🎯 Entry: {entry}\\n\n"
-            f"🛑 SL: {sl}\\n\n"
-            f"🎯 TP1: {tp1}  (+{profit_tp1}€)\n"
-            f"🎯 TP2: {tp2}  (+{profit_tp2}€)\n"
-            f"🎯 TP3: {tp3}  (+{profit_tp3}€)\n\n"
+            f"────────────────────────────\n\n"
+            f"{signal_icon} Signal: {signal}\n"
+            f"────────────────────────────\n\n"
+            f"🛑 SL: {sl}\n\n"
+            f"🎯 Entry: {entry}\n\n"
+            f"🎯 Take Profits:\n"
+            f"{tp_emoji(tp1_prob)} TP1: {tp1} (+{profit_tp1}€)\n"
+            f"{tp_emoji(tp2_prob)} TP2: {tp2} (+{profit_tp2}€)\n"
+            f"{tp_emoji(tp3_prob)} TP3: {tp3} (+{profit_tp3}€)\n\n"
             f"💸 Μέγιστη ζημία (SL): -{risk_amount}€\n"
             f"✅ Confirmations: {confirmation_count} / {total_confirmations}\\n"
             f"📊 MTF Trend: {'✅ Συμφωνία' if mtf_result else '❌ Διαφωνία'}\n\n"
