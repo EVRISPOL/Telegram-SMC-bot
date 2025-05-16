@@ -29,7 +29,7 @@ def main():
     app.add_handler(CommandHandler("start", start))
     # Σε αυτο το αρχειο βρισκονται τα κουμπια copy που εμφανιζονται διπλα απο το entry/sl/tp1 κλπ!
     app.add_handler(CallbackQueryHandler(handle_copy_button, pattern=r'^copy_'))
-     # ✅ Μήνυμα επιβεβαίωσης ότι το bot τρέχει
+    # ✅ Μήνυμα επιβεβαίωσης ότι το bot τρέχει
     print("✅ Bot is running...")
     app.run_polling()
 # Αν το αρχείο τρέχει ως main script, ξεκίνα το bot
